@@ -178,9 +178,6 @@
         </div>
     </section>
 
-    <!-- Appointment Section -->
-
-
     <!-- Testimonials Section -->
     <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
@@ -253,8 +250,6 @@
             </div>
         </div>
     </section>
-
-
 
     <!-- Client Dashboard (Hidden by default) -->
     <div id="client-dashboard" class="hidden py-16 bg-gray-50">
@@ -501,186 +496,41 @@
                         </div>
                     </div>
                 </div>
-
-                <div>
-                    <div class="bg-gray-50 rounded-xl p-8 shadow-md">
-                        <h3 class="text-xl font-bold mb-6 text-gray-800">Envie uma Mensagem</h3>
-                        <form>
-                            <div class="mb-4">
-                                <label for="contact-name" class="block text-gray-700 mb-2">Nome Completo</label>
-                                <input type="text" id="contact-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                            <div class="mb-4">
-                                <label for="contact-email" class="block text-gray-700 mb-2">E-mail</label>
-                                <input type="email" id="contact-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                            <div class="mb-4">
-                                <label for="contact-phone" class="block text-gray-700 mb-2">Telefone</label>
-                                <input type="tel" id="contact-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                            </div>
-                            <div class="mb-4">
-                                <label for="contact-subject" class="block text-gray-700 mb-2">Assunto</label>
-                                <select id="contact-subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
-                                    <option value="">Selecione um assunto</option>
-                                    <option value="agendamento">Agendamento de Consulta</option>
-                                    <option value="duvida">Dúvida sobre Tratamento</option>
-                                    <option value="orcamento">Solicitação de Orçamento</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
-                            <div class="mb-6">
-                                <label for="contact-message" class="block text-gray-700 mb-2">Mensagem</label>
-                                <textarea id="contact-message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-teal-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-teal-700 transition">Enviar Mensagem</button>
-                        </form>
-                    </div>
+                <!-- Google Maps Embed (substitua pelo seu iframe real) -->
+                <div class="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.670278772922!2d-48.14088492576921!3d-0.8525381991206138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92a4650c8e0e6b5d%3A0x6a2c2e0b6b2e0b6b!2sTv%20Lauro%20Sodre%2C%20113%20-%20Vigia%2C%20PA%2C%2068780-000!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+                        width="100%"
+                        height="450"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Map Section -->
-    <div class="h-96 w-full">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d912.9326278679417!2d-48.140302395700886!3d-0.8563089585445314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92a6813a3ffa2c35%3A0x6e1722e28d7f30d1!2sConsult%C3%B3rio%20Odontol%C3%B3gico%20Dra%20Fernanda%20Lara!5e1!3m2!1spt-BR!2sbr!4v1752881853480!5m2!1spt-BR!2sbr" width="100%" height="380" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <i class="fas fa-tooth text-3xl text-teal-400"></i>
-                        <h3 class="text-2xl font-bold">ODONTOLOGIA</h3>
-                    </div>
-                    <p class="text-gray-400">Cuidando do seu sorriso com tecnologia e humanização desde 2010.</p>
-                </div>
-
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Links Rápidos</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#home" class="text-gray-400 hover:text-teal-400 transition">Início</a></li>
-                        <li><a href="#services" class="text-gray-400 hover:text-teal-400 transition">Serviços</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-teal-400 transition">Sobre Nós</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-teal-400 transition">Contato</a></li>
-                        <li><a href="#client-area" class="text-gray-400 hover:text-teal-400 transition">Área do Cliente</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Serviços</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Clareamento Dental</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Implantes Dentários</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Ortodontia</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Estética Dental</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Odontopediatria</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Newsletter</h4>
-                    <p class="text-gray-400 mb-4">Assine nossa newsletter para receber dicas de saúde bucal e promoções especiais.</p>
-                    <form class="flex">
-                        <input type="email" placeholder="Seu e-mail" class="px-4 py-2 rounded-l-lg focus:outline-none text-gray-800 w-full">
-                        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded-r-lg hover:bg-teal-700 transition">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2023 ODONTOLOGIA - Todos os direitos reservados. Desenvolvido com <i class="fas fa-heart text-red-400"></i> por nossa equipe.</p>
-            </div>
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 Odontologia Vigia. Todos os direitos reservados.</p>
+            <p class="text-sm mt-2">Desenvolvido com <i class="fas fa-heart text-red-500"></i> por JuniorBSDn</p>
         </div>
     </footer>
 
-    <!-- Floating WhatsApp Button -->
-    <div class="fixed bottom-6 right-6 z-50">
-        <a href="https://wa.me/5591983252639" target="_blank" class="bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-green-600 transition transform hover:scale-110">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-    </div>
-
-    <!-- Back to Top Button -->
-    <button id="back-to-top" class="fixed bottom-24 right-6 bg-teal-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-lg hover:bg-teal-700 transition transform hover:scale-110 hidden">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
+    <!-- Script para o menu móvel -->
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Login Form Submission
-        const loginForm = document.getElementById('loginForm');
-        const clientAreaSection = document.getElementById('client-area');
-        const clientDashboard = document.getElementById('client-dashboard');
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Simulate login - in a real app, you would validate credentials with a server
-            clientAreaSection.classList.add('hidden');
-            clientDashboard.classList.remove('hidden');
-
-            // Scroll to top of dashboard
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Register Form Submission
-        const registerForm = document.getElementById('registerForm');
-
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Simulate registration - in a real app, you would send data to a server
-            alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
-            registerForm.reset();
-        });
-
-        // Back to Top Button
-        const backToTopButton = document.getElementById('back-to-top');
-
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.remove('hidden');
-            } else {
-                backToTopButton.classList.add('hidden');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
             }
-        });
-
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
         });
     </script>
 </body>
