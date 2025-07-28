@@ -3,76 +3,123 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Financeiro - Clínica Odontológica</title>
+    <title>Financeiro - Odontologia Vigia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-    <div class="max-w-6xl mx-auto p-6">
-        <h1 class="text-3xl font-bold text-blue-800 mb-4">Área Financeira</h1>
+    <!-- Header/Navigation (simplificado para a área do paciente) -->
+    <header class="bg-blue-700 text-white shadow-lg py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-tooth text-3xl"></i>
+                <h1 class="text-2xl font-bold">FINANCEIRO</h1>
+            </div>
+            <nav>
+                <a href="area_paciente.html" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-full font-bold transition">Voltar</a>
+            </nav>
+        </div>
+    </header>
 
-        <div class="flex flex-wrap items-center justify-between mb-6">
+    <main class="flex-grow max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold text-blue-800 mb-4">Visão Geral Financeira</h1>
+
+        <!-- Filtros e Mês Atual -->
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
             <div>
                 <p class="text-lg font-semibold">Mês atual: <span id="mesAtual" class="text-blue-600"></span></p>
             </div>
-            <div>
-                <label for="filtroMes" class="mr-2">Selecionar Mês:</label>
-                <select id="filtroMes" class="border p-2 rounded-md"></select>
+            <div class="flex items-center">
+                <label for="filtroMes" class="mr-2 text-gray-700">Selecionar Mês:</label>
+                <select id="filtroMes" class="border p-2 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"></select>
             </div>
         </div>
 
+        <!-- Informações do Mês -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded">
-                <p class="font-bold">Recebido</p>
-                <p id="valorRecebido" class="text-xl text-green-700">R$ 0,00</p>
+            <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded-lg shadow-md">
+                <p class="font-bold text-green-800">Recebido</p>
+                <p id="valorRecebido" class="text-2xl font-bold text-green-700">R$ 0,00</p>
             </div>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
-                <p class="font-bold">Pendente</p>
-                <p id="valorPendente" class="text-xl text-yellow-700">R$ 0,00</p>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg shadow-md">
+                <p class="font-bold text-yellow-800">Pendente</p>
+                <p id="valorPendente" class="text-2xl font-bold text-yellow-700">R$ 0,00</p>
             </div>
-            <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded">
-                <p class="font-bold">Total Faturado</p>
-                <p id="valorTotalFaturado" class="text-xl text-blue-700">R$ 0,00</p>
+            <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg shadow-md">
+                <p class="font-bold text-blue-800">Total Faturado</p>
+                <p id="valorTotalFaturado" class="text-2xl font-bold text-blue-700">R$ 0,00</p>
             </div>
         </div>
 
+        <!-- Tabela de Pagamentos -->
         <div class="bg-white shadow-md rounded-lg overflow-x-auto">
             <table class="min-w-full table-auto">
                 <thead class="bg-blue-600 text-white">
                     <tr>
-                        <th class="px-4 py-2 text-left">Paciente</th>
-                        <th class="px-4 py-2 text-left">Serviço</th>
-                        <th class="px-4 py-2 text-left">Data</th>
-                        <th class="px-4 py-2 text-left">Valor</th>
-                        <th class="px-4 py-2 text-left">Status</th>
-                        <th class="px-4 py-2 text-left">Forma</th>
+                        <th class="px-4 py-3 text-left">Paciente</th>
+                        <th class="px-4 py-3 text-left">Serviço</th>
+                        <th class="px-4 py-3 text-left">Data</th>
+                        <th class="px-4 py-3 text-left">Valor</th>
+                        <th class="px-4 py-3 text-left">Status</th>
+                        <th class="px-4 py-3 text-left">Forma</th>
                     </tr>
                 </thead>
                 <tbody id="tabelaPagamentosBody">
-                    </tbody>
+                    <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+                </tbody>
             </table>
         </div>
 
+        <!-- Formas de Pagamento -->
         <div class="mt-8">
-            <h2 class="text-xl font-semibold mb-4">Formas de Pagamento Aceitas</h2>
-            <div class="flex gap-4">
-                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Formas de Pagamento Aceitas</h2>
+            <div class="flex flex-wrap gap-4">
+                <div class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm flex items-center gap-2">
                     <i class="fa-brands fa-pix text-green-600 text-xl"></i> PIX
                 </div>
-                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+                <div class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-credit-card text-blue-600 text-xl"></i> Cartão
                 </div>
-                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+                <div class="bg-white border border-gray-200 p-4 rounded-lg shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-file-invoice-dollar text-yellow-600 text-xl"></i> Boleto
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script>
-        const flaskApiUrl = "/api"; // Altere para a URL da sua API no deploy
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 Odontologia Vigia. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
+    <script type="module">
+        // Importe as funções necessárias dos SDKs do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+        // SUA CONFIGURAÇÃO DO FIREBASE AQUI
+        // ATENÇÃO: Substitua os valores abaixo pela sua nova firebaseConfig
+        // que você obteve do console do Firebase após recriar o app web.
+        const firebaseConfig = {
+            apiKey: "SUA_NOVA_API_KEY_AQUI",
+            authDomain: "SEU_AUTH_DOMAIN_AQUI",
+            projectId: "SEU_PROJECT_ID_AQUI",
+            storageBucket: "SEU_STORAGE_BUCKET_AQUI",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID_AQUI",
+            appId: "SEU_NOVO_APP_ID_AQUI"
+        };
+
+        // Inicialize o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Instância de autenticação
+
+        // URL da sua API Flask. Para deploy no Vercel, DEVE ser "/api".
+        const flaskApiUrl = "/api";
+
+        // Elementos do DOM
         const mesAtualEl = document.getElementById("mesAtual");
         const filtroMesSelect = document.getElementById("filtroMes");
         const valorRecebidoEl = document.getElementById("valorRecebido");
@@ -80,14 +127,26 @@
         const valorTotalFaturadoEl = document.getElementById("valorTotalFaturado");
         const tabelaPagamentosBody = document.getElementById("tabelaPagamentosBody");
 
+        let currentUserEmail = null; // Para armazenar o email do usuário logado
+
+        // Função para carregar dados financeiros
         async function carregarDadosFinanceiros(ano, mes) {
+            if (!currentUserEmail) {
+                // Se o email do usuário não estiver disponível, não tente carregar dados
+                tabelaPagamentosBody.innerHTML = '<tr><td colspan="6" class="py-3 px-4 text-center text-gray-500">Faça login para ver os dados financeiros.</td></tr>';
+                valorRecebidoEl.textContent = "R$ 0,00";
+                valorPendenteEl.textContent = "R$ 0,00";
+                valorTotalFaturadoEl.textContent = "R$ 0,00";
+                return;
+            }
+
             try {
                 const response = await fetch(`${flaskApiUrl}/financeiro/dados?ano=${ano}&mes=${mes}`);
                 if (!response.ok) {
                     throw new Error("Erro ao carregar dados financeiros.");
                 }
                 const data = await response.json();
-
+                
                 // Preencher o resumo
                 valorRecebidoEl.textContent = data.resumo.recebido;
                 valorPendenteEl.textContent = data.resumo.pendente;
@@ -95,23 +154,30 @@
 
                 // Preencher a tabela
                 tabelaPagamentosBody.innerHTML = "";
-                data.pagamentos.forEach(pagamento => {
+                if (data.pagamentos.length === 0) {
                     const row = document.createElement("tr");
-                    row.className = "border-b";
-                    row.innerHTML = `
-                        <td class="px-4 py-2">${pagamento.paciente}</td>
-                        <td class="px-4 py-2">${pagamento.servico}</td>
-                        <td class="px-4 py-2">${pagamento.data}</td>
-                        <td class="px-4 py-2">${pagamento.valor}</td>
-                        <td class="px-4 py-2 font-bold text-${pagamento.status === 'Pago' ? 'green' : 'yellow'}-600">${pagamento.status}</td>
-                        <td class="px-4 py-2">${pagamento.forma}</td>
-                    `;
+                    row.innerHTML = `<td colspan="6" class="px-4 py-2 text-center text-gray-500">Nenhum pagamento encontrado para este mês.</td>`;
                     tabelaPagamentosBody.appendChild(row);
-                });
+                } else {
+                    data.pagamentos.forEach(pagamento => {
+                        const row = document.createElement("tr");
+                        row.className = "border-b";
+                        row.innerHTML = `
+                            <td class="px-4 py-2">${pagamento.paciente}</td>
+                            <td class="px-4 py-2">${pagamento.servico}</td>
+                            <td class="px-4 py-2">${pagamento.data}</td>
+                            <td class="px-4 py-2">${pagamento.valor}</td>
+                            <td class="px-4 py-2 font-bold text-${pagamento.status === 'Pago' ? 'green' : 'yellow'}-600">${pagamento.status}</td>
+                            <td class="px-4 py-2">${pagamento.forma}</td>
+                        `;
+                        tabelaPagamentosBody.appendChild(row);
+                    });
+                }
 
             } catch (error) {
                 console.error("Falha ao carregar dados financeiros:", error);
-                alert("Não foi possível carregar os dados financeiros.");
+                // alert("Não foi possível carregar os dados financeiros."); // Evitar alert()
+                tabelaPagamentosBody.innerHTML = '<tr><td colspan="6" class="py-3 px-4 text-center text-red-500">Erro ao carregar dados financeiros.</td></tr>';
             }
         }
 
@@ -122,17 +188,20 @@
             const mesAtual = hoje.getMonth() + 1; // getMonth é 0-indexado
             const anoAtual = hoje.getFullYear();
 
-            meses.forEach((mes, index) => {
+            // Adiciona opções para os últimos 12 meses e futuros, se desejar
+            for (let i = 0; i < 12; i++) { // Exemplo: últimos 12 meses
+                let currentMonth = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
                 const option = document.createElement("option");
-                const mesNumero = index + 1;
-                option.value = `${anoAtual}-${mesNumero}`;
-                option.textContent = `${mes} ${anoAtual}`;
-                if (mesNumero === mesAtual) {
+                const mesNumero = currentMonth.getMonth() + 1;
+                const ano = currentMonth.getFullYear();
+                option.value = `${ano}-${mesNumero}`;
+                option.textContent = `${meses[currentMonth.getMonth()]} ${ano}`;
+                if (mesNumero === mesAtual && ano === anoAtual) {
                     option.selected = true;
-                    mesAtualEl.textContent = `${mes} ${anoAtual}`;
+                    mesAtualEl.textContent = `${meses[currentMonth.getMonth()]} ${ano}`;
                 }
                 filtroMesSelect.appendChild(option);
-            });
+            }
 
             filtroMesSelect.addEventListener("change", (e) => {
                 const [ano, mes] = e.target.value.split('-').map(Number);
@@ -141,10 +210,33 @@
                 carregarDadosFinanceiros(ano, mes);
             });
 
-            carregarDadosFinanceiros(anoAtual, mesAtual);
+            // Carrega os dados para o mês atual ao iniciar, após a autenticação
+            // A chamada real para carregarDadosFinanceiros será feita dentro de onAuthStateChanged
         }
 
-        document.addEventListener("DOMContentLoaded", preencherFiltroMes);
+        // Verifica o estado de autenticação ao carregar a página
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserEmail = user.email;
+                preencherFiltroMes(); // Preenche o filtro e dispara o carregamento inicial
+                const hoje = new Date();
+                carregarDadosFinanceiros(hoje.getFullYear(), hoje.getMonth() + 1);
+            } else {
+                // Se não logado via Firebase Auth, tenta carregar do localStorage (Email/Senha)
+                const storedUser = localStorage.getItem('usuario');
+                if (storedUser) {
+                    const parsedUser = JSON.parse(storedUser);
+                    currentUserEmail = parsedUser.email;
+                    preencherFiltroMes(); // Preenche o filtro e dispara o carregamento inicial
+                    const hoje = new Date();
+                    carregarDadosFinanceiros(hoje.getFullYear(), hoje.getMonth() + 1);
+                } else {
+                    // Nenhum usuário logado, redireciona para a página de login
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
     </script>
 </body>
 </html>
