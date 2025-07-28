@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financeiro - Clínica Odontológica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-blue-800 mb-4">Área Financeira</h1>
+
+    <!-- Filtros e Mês Atual -->
+    <div class="flex flex-wrap items-center justify-between mb-6">
+      <div>
+        <p class="text-lg font-semibold">Mês atual: <span id="mesAtual" class="text-blue-600"></span></p>
+      </div>
+      <div>
+        <label for="filtroMes" class="mr-2">Selecionar Mês:</label>
+        <select id="filtroMes" class="border p-2 rounded-md">
+          <option>Julho 2025</option>
+          <option>Junho 2025</option>
+          <option>Maio 2025</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Informações do Mês -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded">
+        <p class="font-bold">Recebido</p>
+        <p class="text-xl text-green-700">R$ 8.750,00</p>
+      </div>
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
+        <p class="font-bold">Pendente</p>
+        <p class="text-xl text-yellow-700">R$ 2.200,00</p>
+      </div>
+      <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded">
+        <p class="font-bold">Total Faturado</p>
+        <p class="text-xl text-blue-700">R$ 10.950,00</p>
+      </div>
+    </div>
+
+    <!-- Tabela de Pagamentos -->
+    <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-4 py-2 text-left">Paciente</th>
+            <th class="px-4 py-2 text-left">Serviço</th>
+            <th class="px-4 py-2 text-left">Data</th>
+            <th class="px-4 py-2 text-left">Valor</th>
+            <th class="px-4 py-2 text-left">Status</th>
+            <th class="px-4 py-2 text-left">Forma</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b">
+            <td class="px-4 py-2">Maria Silva</td>
+            <td class="px-4 py-2">Limpeza</td>
+            <td class="px-4 py-2">05/07/2025</td>
+            <td class="px-4 py-2">R$ 150,00</td>
+            <td class="px-4 py-2 text-green-600 font-bold">Pago</td>
+            <td class="px-4 py-2">PIX</td>
+          </tr>
+          <tr class="border-b bg-gray-50">
+            <td class="px-4 py-2">João Pedro</td>
+            <td class="px-4 py-2">Extração</td>
+            <td class="px-4 py-2">10/07/2025</td>
+            <td class="px-4 py-2">R$ 300,00</td>
+            <td class="px-4 py-2 text-yellow-600 font-bold">Pendente</td>
+            <td class="px-4 py-2">Boleto</td>
+          </tr>
+          <!-- Mais linhas aqui -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Formas de Pagamento -->
+    <div class="mt-8">
+      <h2 class="text-xl font-semibold mb-4">Formas de Pagamento Aceitas</h2>
+      <div class="flex gap-4">
+        <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+          <i class="fa-brands fa-pix text-green-600 text-xl"></i> PIX
+        </div>
+        <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+          <i class="fa-solid fa-credit-card text-blue-600 text-xl"></i> Cartão
+        </div>
+        <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+          <i class="fa-solid fa-file-invoice-dollar text-yellow-600 text-xl"></i> Boleto
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Preencher mês atual automaticamente
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho',
+                   'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const hoje = new Date();
+    const mesAtual = `${meses[hoje.getMonth()]} ${hoje.getFullYear()}`;
+    document.getElementById("mesAtual").textContent = mesAtual;
+  </script>
+</body>
+</html>

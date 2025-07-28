@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - Clínica Odontológica</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Font Inter para melhor estética -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-700">Criar Conta</h2>
+
+    <!-- Cadastro tradicional -->
+    <form id="cadastroForm" class="space-y-4">
+      <div class="mb-4">
+        <label for="nome" class="block mb-1 font-medium text-gray-700">Nome Completo</label>
+        <input type="text" id="nome" name="nome" required
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+               placeholder="Seu nome completo">
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="block mb-1 font-medium text-gray-700">E-mail</label>
+        <input type="email" id="email" name="email" required
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+               placeholder="seu.email@exemplo.com">
+      </div>
+
+      <div class="mb-4">
+        <label for="senha" class="block mb-1 font-medium text-gray-700">Senha</label>
+        <input type="password" id="senha" name="senha" required
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+               placeholder="Crie uma senha segura">
+      </div>
+
+      <button type="submit"
+              class="w-full bg-blue-600 text-white py-2.5 rounded-md hover:bg-blue-700 transition duration-200 ease-in-out shadow-lg">
+        Cadastrar
+      </button>
+    </form>
+
+    <br>
+    <!-- Link para login existente -->
+    <a href="login.html" class="mt-2 block text-center text-sm text-blue-600 hover:underline">
+      ------- Já tenho uma conta -------
+    </a>
+
+    <!------------ MENSAGEM DE FEEDBACK -------------->
+    <p id="mensagem" class="mt-4 text-center text-red-600 font-semibold hidden"></p>
+  </div>
+
+  <script type="module">
+    // Importe as funções necessárias dos SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Sua configuração do Firebase (a mesma usada na página de login)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXlox_S8zU5PddqV9E1msIS8F1l6UsMfM",
+      authDomain: "sema-vigia.firebaseapp.com",
+      projectId: "sema-vigia",
+      storageBucket: "sema-vigia.firebasestorage.app",
+      messagingSenderId: "995439184565",
+      appId: "1:995439184565:web:dd33b93a95db5c0b3e0cfc"
+    };
+
+    // Inicialize o Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const usuariosRef = collection(db, 'USUARIO'); // Referência à coleção de usuários
+
+    // URL completa para a sua API Flask
+    // ATENÇÃO: Ao implantar na Vercel, esta URL DEVE ser a URL pública da sua API Flask.
+    // Por exemplo: "https://sua-api-flask.vercel.app" ou "https://api.seusite.com"
+    // Para desenvolvimento local, mantenha "http://127.0.0.1:5000"
+    const flaskApiUrl = "http://127.0.0.1:5000";
+
+    // Função para exibir mensagens de feedback
+    function showMessage(text, isError = true) {
+      const msg = document.getElementById("mensagem");
+      msg.textContent = text;
+      msg.classList.remove("hidden");
+      if (isError) {
+        msg.classList.remove("text-green-600");
+        msg.classList.add("text-red-600");
+      } else {
+        msg.classList.remove("text-red-600");
+        msg.classList.add("text-green-600");
+      }
+    }
+
+    // Lógica para o cadastro tradicional (e-mail e senha) via API Flask
+    document.getElementById("cadastroForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      try {
+        const res = await fetch(`${flaskApiUrl}/cadastrar_usuario`, { // Usando URL absoluta
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, email, senha })
+        });
+        const data = await res.json();
+
+        if (res.ok) { // Verifica se a resposta HTTP é de sucesso (2xx)
+          showMessage("Usuário cadastrado com sucesso! Redirecionando para completar perfil...", false);
+          // Armazena dados básicos para a próxima página, se necessário
+          localStorage.setItem("usuario", JSON.stringify({ nome, email }));
+          window.location.href = "perfil.html"; // Redireciona para completar o perfil
+        } else {
+          showMessage(data.erro || "Erro ao cadastrar usuário. Tente novamente.");
+        }
+      } catch (err) {
+        console.error("Erro ao conectar com o servidor ou realizar cadastro:", err);
+        showMessage("Erro ao conectar com o servidor. Verifique sua conexão.");
+      }
+    });
+
+  </script>
+
+</body>
+</html>

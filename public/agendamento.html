@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, ianitial-scale=1.0">
+    <title>Agendamento - Clínica Odontológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tooth-checkbox {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .tooth-label {
+            display: inline-block;
+            width: 30px;
+            height: 40px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 40px;
+            margin: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tooth-checkbox:checked + .tooth-label {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .tooth-checkbox:checked + .tooth-label::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 640px) {
+            .tooth-label {
+                width: 25px;
+                height: 35px;
+                line-height: 35px;
+                font-size: 12px;
+            }
+        }
+
+        /* Animation for form submission */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Style for feedback message */
+        #formMessage {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        #formMessage.text-red-600 {
+            background-color: #fee2e2; /* bg-red-100 */
+            border: 1px solid #ef4444; /* border-red-500 */
+        }
+        #formMessage.text-green-600 {
+            background-color: #dcfce7; /* bg-green-100 */
+            border: 1px solid #22c55e; /* border-green-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <button onclick="window.location.assign('/area_paciente.html')" type="button" class="w-full mt-2 flex justify-left py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all">
+        Voltar
+      </button>
+        <header class="mb-8 text-center fade-in">
+            <div class="flex justify-center items-center mb-4">
+                <i class="fas fa-tooth text-blue-500 text-4xl mr-3"></i>
+                <h1 class="text-3xl font-bold text-gray-800">AGENDAMENTO</h1>
+            </div>
+            <p class="text-gray-600">Preencha o formulário abaixo para agendar sua consulta</p>
+        </header>
+
+        <!-- Progress Steps -->
+        <div class="mb-8 fade-in">
+            <div class="flex justify-between relative">
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -z-10"></div>
+                <div id="progress-bar" class="absolute top-1/2 left-0 h-1 bg-blue-500 -z-10 transition-all duration-300" style="width: 33.33%"></div>
+
+                <div class="step flex flex-col items-center relative" data-step="1">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center mb-2">
+                        <span>1</span>
+                    </div>
+                    <span class="text-sm font-medium text-blue-600">Dados Pessoais</span>
+                </div>
+
+                <div class="step flex flex-col items-center relative" data-step="2">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center mb-2">
+                        <span>2</span>
+                    </div>
+                    <span class="text-sm font-medium text-gray-500">Agendamento</span>
+                </div>
+
+                <div class="step flex flex-col items-center relative" data-step="3">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center mb-2">
+                        <span>3</span>
+                    </div>
+                    <span class="text-sm font-medium text-gray-500">Histórico</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <form id="dental-form" class="bg-white rounded-lg shadow-md p-6 fade-in">
+            <!-- Step 1: Personal Information -->
+            <div id="step-1" class="form-step active">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-2">
+                    <i class="fas fa-user-circle text-blue-500 mr-2"></i>Dados Pessoais
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">Nome Completo*</label>
+                        <input type="text" id="nome" name="nome" required readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-100 cursor-not-allowed">
+                    </div>
+
+                    <div>
+                        <label for="cpf" class="block text-sm font-medium text-gray-700 mb-1">CPF*</label>
+                        <input type="text" id="cpf" name="cpf" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="000.000.000-00">
+                    </div>
+
+                    <div>
+                        <label for="data_nascimento" class="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento*</label>
+                        <input type="date" id="data_nascimento" name="data_nascimento" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="sexo" class="block text-sm font-medium text-gray-700 mb-1">Sexo*</label>
+                        <select id="sexo" name="sexo" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Outro">Outro</option>
+                            <option value="Prefiro não dizer">Prefiro não dizer</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="telefone" class="block text-sm font-medium text-gray-700 mb-1">Telefone*</label>
+                        <input type="tel" id="telefone" name="telefone" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
+                        <input type="email" id="email" name="email" required readonly class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-100 cursor-not-allowed" placeholder="seu@email.com">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">Endereço Completo*</label>
+                    <input type="text" id="endereco" name="endereco" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="flex justify-end mt-8">
+                    <button type="button" class="next-step bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition duration-300 flex items-center">
+                        Próximo <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Appointment Information -->
+            <div id="step-2" class="form-step hidden">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-2">
+                    <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>Agendamento
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="data_consulta" class="block text-sm font-medium text-gray-700 mb-1">Data da Consulta*</label>
+                        <input type="date" id="data_consulta" name="data_consulta" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="hora_consulta" class="block text-sm font-medium text-gray-700 mb-1">Horário*</label>
+                        <select id="hora_consulta" name="hora_consulta" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Selecione um horário</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="dentista" class="block text-sm font-medium text-gray-700 mb-1">Dentista*</label>
+                        <select id="dentista" name="dentista" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Selecione um profissional</option>
+                            <option value="Dr. Carlos Silva">Dr. Carlos Silva (Clínico Geral)</option>
+                            <option value="Dra. Ana Oliveira">Dra. Ana Oliveira (Ortodontista)</option>
+                            <option value="Dr. Marcos Pereira">Dr. Marcos Pereira (Endodontista)</option>
+                            <option value="Dra. Juliana Santos">Dra. Juliana Santos (Periodontista)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="procedimento" class="block text-sm font-medium text-gray-700 mb-1">Procedimento*</label>
+                        <select id="procedimento" name="procedimento" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Selecione um procedimento</option>
+                            <option value="Consulta">Consulta</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Extracao">Extração</option>
+                            <option value="Restauracao">Restauração</option>
+                            <option value="Canal">Canal</option>
+                            <option value="Ortodontia">Ortodontia</option>
+                            <option value="Protese">Prótese</option>
+                            <option value="Implante">Implante</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="relato_cliente" class="block text-sm font-medium text-gray-700 mb-1">Queixa Principal*</label>
+                    <textarea id="relato_cliente" name="relato_cliente" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Descreva sua queixa principal..."></textarea>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="prev-step bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md transition duration-300 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar
+                    </button>
+                    <button type="button" class="next-step bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition duration-300 flex items-center">
+                        Próximo <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Dental History -->
+            <div id="step-3" class="form-step hidden">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-2">
+                    <i class="fas fa-notes-medical text-blue-500 mr-2"></i>Histórico Odontológico
+                </h2>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">Tem algum dos seguintes problemas de saúde?</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="diabetes" name="diabetes" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="diabetes" class="ml-2 text-sm text-gray-700">Diabetes</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="hipertensao" name="hipertensao" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="hipertensao" class="ml-2 text-sm text-gray-700">Hipertensão</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="cardio" name="cardio" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="cardio" class="ml-2 text-sm text-gray-700">Problemas Cardíacos</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="alergias" name="alergias" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="alergias" class="ml-2 text-sm text-gray-700">Alergias</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="coagulacao" name="coagulacao" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="coagulacao" class="ml-2 text-sm text-gray-700">Problemas de Coagulação</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="none" name="none" value="true" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="none" class="ml-2 text-sm text-gray-700">Nenhum</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="medication" class="block text-sm font-medium text-gray-700 mb-1">Medicações em Uso</label>
+                    <textarea id="medication" name="medication" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Liste as medicações que você está usando atualmente..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">Dentes com Problemas</h3>
+                    <p class="text-sm text-gray-500 mb-4">Selecione os dentes que estão com problemas ou que precisam de tratamento:</p>
+
+                    <div class="flex flex-wrap justify-center mb-4">
+                        <!-- Upper Teeth -->
+                        <div class="mb-4 w-full">
+                            <div class="flex flex-wrap justify-center">
+                                <!-- Upper Right -->
+                                <div class="flex flex-col items-center mr-8">
+                                    <span class="text-xs text-gray-500 mb-1">Superior Direito</span>
+                                    <div class="flex flex-wrap" style="width: 180px;">
+                                        <!-- 1-8 -->
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-18" class="tooth-checkbox" name="problem-teeth" value="18">
+                                            <label for="tooth-18" class="tooth-label">18</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-17" class="tooth-checkbox" name="problem-teeth" value="17">
+                                            <label for="tooth-17" class="tooth-label">17</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-16" class="tooth-checkbox" name="problem-teeth" value="16">
+                                            <label for="tooth-16" class="tooth-label">16</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-15" class="tooth-checkbox" name="problem-teeth" value="15">
+                                            <label for="tooth-15" class="tooth-label">15</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-14" class="tooth-checkbox" name="problem-teeth" value="14">
+                                            <label for="tooth-14" class="tooth-label">14</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-13" class="tooth-checkbox" name="problem-teeth" value="13">
+                                            <label for="tooth-13" class="tooth-label">13</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-12" class="tooth-checkbox" name="problem-teeth" value="12">
+                                            <label for="tooth-12" class="tooth-label">12</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-11" class="tooth-checkbox" name="problem-teeth" value="11">
+                                            <label for="tooth-11" class="tooth-label">11</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Upper Left -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs text-gray-500 mb-1">Superior Esquerdo</span>
+                                    <div class="flex flex-wrap" style="width: 180px;">
+                                        <!-- 21-28 -->
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-21" class="tooth-checkbox" name="problem-teeth" value="21">
+                                            <label for="tooth-21" class="tooth-label">21</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-22" class="tooth-checkbox" name="problem-teeth" value="22">
+                                            <label for="tooth-22" class="tooth-label">22</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-23" class="tooth-checkbox" name="problem-teeth" value="23">
+                                            <label for="tooth-23" class="tooth-label">23</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-24" class="tooth-checkbox" name="problem-teeth" value="24">
+                                            <label for="tooth-24" class="tooth-label">24</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-25" class="tooth-checkbox" name="problem-teeth" value="25">
+                                            <label for="tooth-25" class="tooth-label">25</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-26" class="tooth-checkbox" name="problem-teeth" value="26">
+                                            <label for="tooth-26" class="tooth-label">26</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-27" class="tooth-checkbox" name="problem-teeth" value="27">
+                                            <label for="tooth-27" class="tooth-label">27</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-28" class="tooth-checkbox" name="problem-teeth" value="28">
+                                            <label for="tooth-28" class="tooth-label">28</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lower Teeth -->
+                        <div class="w-full">
+                            <div class="flex flex-wrap justify-center">
+                                <!-- Lower Right -->
+                                <div class="flex flex-col items-center mr-8">
+                                    <span class="text-xs text-gray-500 mb-1">Inferior Direito</span>
+                                    <div class="flex flex-wrap" style="width: 180px;">
+                                        <!-- 41-48 -->
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-48" class="tooth-checkbox" name="problem-teeth" value="48">
+                                            <label for="tooth-48" class="tooth-label">48</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-47" class="tooth-checkbox" name="problem-teeth" value="47">
+                                            <label for="tooth-47" class="tooth-label">47</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-46" class="tooth-checkbox" name="problem-teeth" value="46">
+                                            <label for="tooth-46" class="tooth-label">46</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-45" class="tooth-checkbox" name="problem-teeth" value="45">
+                                            <label for="tooth-45" class="tooth-label">45</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-44" class="tooth-checkbox" name="problem-teeth" value="44">
+                                            <label for="tooth-44" class="tooth-label">44</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-43" class="tooth-checkbox" name="problem-teeth" value="43">
+                                            <label for="tooth-43" class="tooth-label">43</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-42" class="tooth-checkbox" name="problem-teeth" value="42">
+                                            <label for="tooth-42" class="tooth-label">42</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-41" class="tooth-checkbox" name="problem-teeth" value="41">
+                                            <label for="tooth-41" class="tooth-label">41</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Lower Left -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs text-gray-500 mb-1">Inferior Esquerdo</span>
+                                    <div class="flex flex-wrap" style="width: 180px;">
+                                        <!-- 31-38 -->
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-31" class="tooth-checkbox" name="problem-teeth" value="31">
+                                            <label for="tooth-31" class="tooth-label">31</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-32" class="tooth-checkbox" name="problem-teeth" value="32">
+                                            <label for="tooth-32" class="tooth-label">32</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-33" class="tooth-checkbox" name="problem-teeth" value="33">
+                                            <label for="tooth-33" class="tooth-label">33</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-34" class="tooth-checkbox" name="problem-teeth" value="34">
+                                            <label for="tooth-34" class="tooth-label">34</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-35" class="tooth-checkbox" name="problem-teeth" value="35">
+                                            <label for="tooth-35" class="tooth-label">35</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-36" class="tooth-checkbox" name="problem-teeth" value="36">
+                                            <label for="tooth-36" class="tooth-label">36</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-37" class="tooth-checkbox" name="problem-teeth" value="37">
+                                            <label for="tooth-37" class="tooth-label">37</label>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <input type="checkbox" id="tooth-38" class="tooth-checkbox" name="problem-teeth" value="38">
+                                            <label for="tooth-38" class="tooth-label">38</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="observations" class="block text-sm font-medium text-gray-700 mb-1">Observações Adicionais</label>
+                    <textarea id="observations" name="observations" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Alguma informação adicional que considere importante..."></textarea>
+                </div>
+
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="concordo" name="consent" type="checkbox" required class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="concordo" class="font-medium text-gray-700">Declaro que as informações fornecidas são verdadeiras*</label>
+                        <p class="text-gray-500">Concordo com o tratamento dos meus dados pessoais conforme a política de privacidade da clínica.</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button type="button" class="prev-step bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md transition duration-300 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Voltar
+                    </button>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md transition duration-300 flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i> Finalizar Agendamento
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Success Modal -->
+        <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center fade-in">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-green-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Agendamento Concluído!</h3>
+                <p class="text-gray-600 mb-6">Seu agendamento foi realizado com sucesso. Em breve entraremos em contato para confirmar sua consulta.</p>
+                <button id="close-modal" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition duration-300">
+                    Fechar
+                </button>
+            </div>
+        </div>
+        <!-- Message display area for form-wide messages -->
+        <p id="formMessage" class="hidden"></p>
+    </div>
+
+   <script type="module">
+    // Importe as funções necessárias dos SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Sua configuração do Firebase (a mesma usada nas outras páginas)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBXlox_S8zU5PddqV9E1msIS8F1l6UsMfM",
+        authDomain: "sema-vigia.firebaseapp.com",
+        projectId: "sema-vigia",
+        storageBucket: "sema-vigia.firebasestorage.app",
+        messagingSenderId: "995439184565",
+        appId: "1:995439184565:web:dd33b93a95db5c0b3e0cfc"
+    };
+
+    // Inicialize o Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const usuariosRef = collection(db, 'USUARIO'); // Referência à coleção de usuários
+
+    // URL completa para a sua API Flask
+    // ATENÇÃO: Ao implantar na Vercel, esta URL DEVE ser a URL pública da sua API Flask.
+    // Por exemplo: "https://sua-api-flask.vercel.app" ou "https://api.seusite.com"
+    // Para desenvolvimento local, mantenha "http://127.0.0.1:5000"
+    const flaskApiUrl = "http://127.0.0.1:5000";
+
+    // Função para exibir mensagens de feedback no formulário principal
+    function showFormMessage(text, isError = true) {
+        const msg = document.getElementById("formMessage");
+        msg.textContent = text;
+        msg.classList.remove("hidden");
+        if (isError) {
+            msg.classList.remove("text-green-600");
+            msg.classList.add("text-red-600");
+        } else {
+            msg.classList.remove("text-red-600");
+            msg.classList.add("text-green-600");
+        }
+        // Esconde a mensagem após alguns segundos
+        setTimeout(() => {
+            msg.classList.add("hidden");
+        }, 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const formSteps = document.querySelectorAll('.form-step');
+        const nextButtons = document.querySelectorAll('.next-step');
+        const prevButtons = document.querySelectorAll('.prev-step');
+        const progressBar = document.getElementById('progress-bar');
+        const form = document.getElementById('dental-form');
+        const successModal = document.getElementById('success-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        let currentStep = 0;
+        let userEmail = null; // Para armazenar o e-mail do usuário logado
+
+        // --- Carregar dados do usuário logado e pré-preencher Step 1 ---
+        const usuarioString = localStorage.getItem('usuario');
+        if (usuarioString) {
+            try {
+                const usuario = JSON.parse(usuarioString);
+                if (usuario.nome) {
+                    document.getElementById('nome').value = usuario.nome;
+                }
+                if (usuario.email) {
+                    document.getElementById('email').value = usuario.email;
+                    userEmail = usuario.email; // Armazena o e-mail para o envio do agendamento
+                }
+                if (usuario.cpf) {
+                    document.getElementById('cpf').value = usuario.cpf;
+                }
+                if (usuario.data_nascimento) {
+                    document.getElementById('data_nascimento').value = usuario.data_nascimento;
+                }
+                if (usuario.sexo) {
+                    document.getElementById('sexo').value = usuario.sexo;
+                }
+                if (usuario.telefone) {
+                    document.getElementById('telefone').value = usuario.telefone;
+                }
+                if (usuario.endereco) {
+                    document.getElementById('endereco').value = usuario.endereco;
+                }
+            } catch (e) {
+                console.error("Erro ao parsear dados do usuário do localStorage:", e);
+                showFormMessage("Erro ao carregar seus dados. Por favor, faça login novamente.", true);
+                // Opcional: Redirecionar para login se os dados estiverem corrompidos
+                // setTimeout(() => { window.location.assign('/login.html'); }, 2000); // Alterado para root-relative
+            }
+        } else {
+            showFormMessage("Nenhum usuário logado. Por favor, faça login para agendar sua consulta.", true);
+            // Redirecionar para login se não houver usuário no localStorage
+            setTimeout(() => { window.location.assign('/login.html'); }, 2000); // Alterado para root-relative
+        }
+
+        function showStep(index) {
+            formSteps.forEach((step, i) => {
+                step.classList.toggle('hidden', i !== index);
+            });
+
+            const percent = ((index + 1) / formSteps.length) * 100;
+            progressBar.style.width = `${percent}%`;
+
+            document.querySelectorAll('.step').forEach((step, i) => {
+                const circle = step.querySelector('div');
+                const label = step.querySelector('span');
+
+                if (i <= index) {
+                    circle.classList.remove('bg-gray-200', 'text-gray-600');
+                    circle.classList.add('bg-blue-500', 'text-white');
+                    label.classList.remove('text-gray-500');
+                    label.classList.add('text-blue-600');
+                } else {
+                    circle.classList.add('bg-gray-200', 'text-gray-600');
+                    circle.classList.remove('bg-blue-500', 'text-white');
+                    label.classList.add('text-gray-500');
+                    label.classList.remove('text-blue-600');
+                }
+            });
+        }
+
+        nextButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Validação básica antes de avançar
+                const currentStepElement = formSteps[currentStep];
+                const requiredInputs = currentStepElement.querySelectorAll('[required]');
+                let allFieldsFilled = true;
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        allFieldsFilled = false;
+                        input.classList.add('border-red-500'); // Adiciona borda vermelha
+                    } else {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+
+                if (!allFieldsFilled) {
+                    showFormMessage("Por favor, preencha todos os campos obrigatórios.", true);
+                    return; // Impede o avanço se campos obrigatórios não estiverem preenchidos
+                }
+
+                if (currentStep < formSteps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                    showFormMessage("", false); // Limpa mensagem ao avançar
+                }
+            });
+        });
+
+        prevButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    showStep(currentStep);
+                    showFormMessage("", false); // Limpa mensagem ao voltar
+                }
+            });
+        });
+
+        // --- Lógica de Submissão do Formulário de Agendamento ---
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Coleta dados do Step 1
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+            const data_nascimento = document.getElementById('data_nascimento').value;
+            const sexo = document.getElementById('sexo').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value; // Usar o email do campo
+            const endereco = document.getElementById('endereco').value;
+
+            // Coleta dados do Step 2
+            const data_consulta = document.getElementById('data_consulta').value;
+            const hora_consulta = document.getElementById('hora_consulta').value;
+            const dentista = document.getElementById('dentista').value;
+            const procedimento = document.getElementById('procedimento').value;
+            const relato_cliente = document.getElementById('relato_cliente').value;
+
+            // Coleta dados do Step 3 (Histórico Odontológico)
+            const diabetes = document.getElementById('diabetes').checked;
+            const hipertensao = document.getElementById('hipertensao').checked;
+            const cardio = document.getElementById('cardio').checked;
+            const alergias = document.getElementById('alergias').checked;
+            const coagulacao = document.getElementById('coagulacao').checked;
+            const none = document.getElementById('none').checked; // "Nenhum" problema de saúde
+            const medication = document.getElementById('medication').value;
+
+            const problemTeeth = [];
+            document.querySelectorAll('input[name="problem-teeth"]:checked').forEach(checkbox => {
+                problemTeeth.push(checkbox.value);
+            });
+
+            const concordo = document.getElementById('concordo').checked;
+
+            // Validação final antes de enviar
+            if (!concordo) {
+                showFormMessage("Você deve concordar com a declaração de informações verdadeiras.", true);
+                return;
+            }
+
+            if (!userEmail) { // Garante que temos um e-mail válido para o agendamento
+                showFormMessage("E-mail do usuário não encontrado. Por favor, faça login novamente.", true);
+                return;
+            }
+
+            const agendamentoData = {
+                // Dados do paciente (ETAPA1)
+                nome: nome,
+                cpf: cpf,
+                data_nascimento: data_nascimento,
+                sexo: sexo,
+                telefone: telefone,
+                email: email, // Usar o email do campo, que deve ser o do usuário logado
+                endereco: endereco,
+
+                // Dados do agendamento (ETAPA2)
+                data_consulta: data_consulta,
+                hora_consulta: hora_consulta,
+                dentista: dentista,
+                procedimento: procedimento,
+                relato_cliente: relato_cliente,
+
+                // Dados do histórico (ETAPA3)
+                diabetes: diabetes,
+                hipertensao: hipertensao,
+                cardio: cardio,
+                alergias: alergias,
+                coagulacao: coagulacao,
+                none: none, // Campo "Nenhum"
+                medication: medication,
+                dentes_afetados: problemTeeth // Array de dentes selecionados
+            };
+
+            try {
+                const res = await fetch(`${flaskApiUrl}/agendar_consulta`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(agendamentoData)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    successModal.classList.remove('hidden'); // Mostra modal de sucesso
+                    form.reset(); // Limpa o formulário
+                    currentStep = 0; // Volta para o primeiro passo
+                    showStep(currentStep); // Atualiza a UI para o primeiro passo
+                    showFormMessage("Agendamento realizado com sucesso!", false); // Mensagem de sucesso
+                } else {
+                    showFormMessage(data.erro || "Erro ao agendar consulta. Tente novamente.", true);
+                }
+            } catch (err) {
+                console.error("Erro ao conectar com o servidor ou agendar:", err);
+                showFormMessage("Erro de conexão. Verifique sua rede ou se a API está rodando.", true);
+            }
+        });
+
+        // --- Lógica do Modal de Sucesso ---
+        closeModalBtn.addEventListener('click', () => {
+            successModal.classList.add('hidden');
+            // Opcional: Redirecionar para a área do paciente após fechar o modal
+            window.location.assign('/area_paciente.html'); // Alterado para root-relative com assign
+        });
+
+        showStep(currentStep); // Mostra o primeiro passo ao carregar a página
+    });
+    </script>
+</body>
+</html>

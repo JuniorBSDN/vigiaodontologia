@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Paciente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Inter para melhor estética -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Estilo para a mensagem de feedback */
+    #mensagem {
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    #mensagem.text-red-600 {
+      background-color: #fee2e2; /* bg-red-100 */
+      border: 1px solid #ef4444; /* border-red-500 */
+    }
+    #mensagem.text-green-600 {
+      background-color: #dcfce7; /* bg-green-100 */
+      border: 1px solid #22c55e; /* border-green-500 */
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen">
+
+  <div class="max-w-3xl mx-auto p-6 w-full">
+    <h1 class="text-3xl font-bold text-blue-700 mb-6 text-center">Preencher Perfil do Paciente</h1>
+
+    <form id="perfilForm" class="bg-white shadow-xl rounded-lg p-8 space-y-6">
+      <div>
+        <label for="nome" class="block font-semibold text-gray-700 mb-1">Nome completo</label>
+        <input type="text" id="nome" name="nome" required readonly
+               class="w-full border border-gray-300 px-4 py-2 rounded-md bg-gray-100 cursor-not-allowed focus:outline-none focus:ring focus:ring-blue-300 shadow-sm">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="cpf" class="block font-semibold text-gray-700 mb-1">CPF</label>
+          <input type="text" id="cpf" name="cpf" required
+                 class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+                 placeholder="000.000.000-00">
+        </div>
+
+        <div>
+          <label for="telefone" class="block font-semibold text-gray-700 mb-1">Telefone</label>
+          <input type="tel" id="telefone" name="telefone" required
+                 class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+                 placeholder="(00) 00000-0000">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="data_nascimento" class="block font-semibold text-gray-700 mb-1">Data de nascimento</label>
+          <input type="date" id="data_nascimento" name="data_nascimento" required
+                 class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm">
+        </div>
+
+        <div>
+          <label for="sexo" class="block font-semibold text-gray-700 mb-1">Sexo</label>
+          <select id="sexo" name="sexo"
+                  class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm">
+            <option value="">Selecione...</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="endereco" class="block font-semibold text-gray-700 mb-1">Endereço completo</label>
+        <input type="text" id="endereco" name="endereco" required
+               class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm"
+               placeholder="Rua, número, bairro, cidade, estado">
+      </div>
+
+      <div>
+        <label for="plano" class="block font-semibold text-gray-700 mb-1">Possui plano odontológico?</label>
+        <select id="plano" name="plano"
+                class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-300 shadow-sm">
+          <option value="Não">Não</option>
+          <option value="Sim - Particular">Sim - Particular</option>
+          <option value="Sim - Convênio">Sim - Convênio</option>
+        </select>
+      </div>
+
+      <div class="text-center">
+        <button type="submit"
+                class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition duration-200 ease-in-out shadow-lg text-lg font-semibold">
+          Salvar Perfil
+        </button>
+      </div>
+      <!------------ MENSAGEM DE FEEDBACK -------------->
+      <p id="mensagem" class="hidden"></p>
+    </form>
+  </div>
+
+  <script type="module">
+    // Importe as funções necessárias dos SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Sua configuração do Firebase (a mesma usada nas outras páginas)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXlox_S8zU5PddqV9E1msIS8F1l6UsMfM",
+      authDomain: "sema-vigia.firebaseapp.com",
+      projectId: "sema-vigia",
+      storageBucket: "sema-vigia.firebasestorage.app",
+      messagingSenderId: "995439184565",
+      appId: "1:995439184565:web:dd33b93a95db5c0b3e0cfc"
+    };
+
+    // Inicialize o Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const usuariosRef = collection(db, 'USUARIO'); // Referência à coleção de usuários
+
+    // URL completa para a sua API Flask
+    // ATENÇÃO: Ao implantar na Vercel, esta URL DEVE ser a URL pública da sua API Flask.
+    // Por exemplo: "https://sua-api-flask.vercel.app" ou "https://api.seusite.com"
+    // Para desenvolvimento local, mantenha "http://127.0.0.1:5000"
+    const flaskApiUrl = "http://127.0.0.1:5000";
+
+    // Função para exibir mensagens de feedback
+    function showMessage(text, isError = true) {
+      const msg = document.getElementById("mensagem");
+      msg.textContent = text;
+      msg.classList.remove("hidden");
+      if (isError) {
+        msg.classList.remove("text-green-600");
+        msg.classList.add("text-red-600");
+      } else {
+        msg.classList.remove("text-red-600");
+        msg.classList.add("text-green-600");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const nomeInput = document.getElementById('nome');
+      const perfilForm = document.getElementById('perfilForm');
+      let userEmail = null; // Variável para armazenar o e-mail do usuário
+
+      // Tenta carregar os dados do usuário do localStorage
+      const usuarioString = localStorage.getItem('usuario');
+      if (usuarioString) {
+        try {
+          const usuario = JSON.parse(usuarioString);
+          if (usuario.nome) {
+            nomeInput.value = usuario.nome;
+          }
+          if (usuario.email) {
+            userEmail = usuario.email; // Armazena o e-mail para uso posterior
+          } else {
+            showMessage("E-mail do usuário não encontrado no localStorage. Por favor, faça login novamente.", true);
+            // Opcional: Redirecionar para a página de login se o email não for encontrado
+            // window.location.href = "login.html";
+          }
+        } catch (e) {
+          console.error("Erro ao parsear dados do usuário do localStorage:", e);
+          showMessage("Erro ao carregar dados do usuário. Por favor, faça login novamente.", true);
+          // Opcional: Redirecionar para a página de login
+          // window.location.href = "login.html";
+        }
+      } else {
+        showMessage("Nenhum dado de usuário encontrado. Por favor, faça login para completar seu perfil.", true);
+        // Opcional: Redirecionar para a página de login
+        // window.location.href = "login.html";
+      }
+
+      // Lógica para salvar o perfil via API Flask
+      perfilForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!userEmail) {
+          showMessage("E-mail do usuário não disponível para atualizar o perfil. Faça login novamente.", true);
+          return;
+        }
+
+        const dadosPerfil = {
+          email: userEmail, // Envia o e-mail para identificar o usuário no backend
+          cpf: document.getElementById('cpf').value,
+          telefone: document.getElementById('telefone').value,
+          data_nascimento: document.getElementById('data_nascimento').value,
+          sexo: document.getElementById('sexo').value,
+          endereco: document.getElementById('endereco').value,
+          plano: document.getElementById('plano').value
+        };
+
+        try {
+          const res = await fetch(`${flaskApiUrl}/completar_perfil`, { // Usando URL absoluta
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosPerfil)
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            showMessage("Perfil atualizado com sucesso! Redirecionando para a tela de login...", false);
+            // Remove os dados do localStorage após completar o perfil, pois o usuário fará login novamente
+            localStorage.removeItem('usuario'); // Limpa os dados do usuário do localStorage
+
+            setTimeout(() => {
+              window.location.href = "login.html"; // Redireciona para a tela de login
+            }, 1500); // Pequeno atraso para o usuário ver a mensagem
+          } else {
+            showMessage(data.erro || "Erro ao salvar perfil. Tente novamente.");
+          }
+        } catch (err) {
+          console.error("Erro ao conectar com o servidor ou salvar perfil:", err);
+          showMessage("Erro de conexão. Verifique se a API está rodando e sua internet.");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

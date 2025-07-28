@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OdontologiaVigia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #38b2ac 0%, #0ea5e9 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .login-form {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+        .dashboard-card {
+            transition: all 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: scale(1.03);
+        }
+        .tooth-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-tooth text-3xl tooth-icon"></i>
+                    <h1 class="text-2xl font-bold">ODONTOLOGIA VIGIA</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-teal-100 font-medium">Início</a>
+                    <a href="#services" class="hover:text-teal-100 font-medium">Serviços</a>
+                    <a href="#about" class="hover:text-teal-100 font-medium">Sobre Nós</a>
+                    <a href="#contact" class="hover:text-teal-100 font-medium">Contato</a>
+                    <a href="login.html" class="bg-white text-teal-600 px-4 py-2 rounded-full font-bold hover:bg-teal-50 transition">Área do Cliente</a>
+                </nav>
+                <button class="md:hidden text-2xl" id="mobile-menu-button">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 pb-2" id="mobile-menu">
+                <a href="#home" class="block py-2 hover:bg-teal-600 px-2 rounded">Início</a>
+                <a href="#services" class="block py-2 hover:bg-teal-600 px-2 rounded">Serviços</a>
+                <a href="#about" class="block py-2 hover:bg-teal-600 px-2 rounded">Sobre Nós</a>
+                <a href="#contact" class="block py-2 hover:bg-teal-600 px-2 rounded">Contato</a>
+                <a href="login.html" class="block bg-white text-teal-600 px-4 py-2 rounded-full font-bold mt-2 text-center">Área do Cliente</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg text-white py-16 md:py-24">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">Seu sorriso saudável é nossa prioridade</h2>
+                <p class="text-xl mb-8">Tecnologia avançada e atendimento humanizado para cuidar do seu sorriso com excelência.</p>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Dentista atendendo paciente" class="rounded-lg shadow-2xl w-full max-w-md">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Nossos Serviços</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Oferecemos tratamentos odontológicos completos com tecnologia de ponta e profissionais especializados.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-teeth-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Clareamento Dental</h3>
+                    <p class="text-gray-600">Técnicas avançadas para um sorriso mais branco e brilhante, com resultados naturais e duradouros.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-tooth"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Implantes Dentários</h3>
+                    <p class="text-gray-600">Solução definitiva para a perda dentária, com tecnologia de última geração e materiais de qualidade.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-teeth"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Ortodontia</h3>
+                    <p class="text-gray-600">Aparelhos fixos e móveis, inclusive alinhadores transparentes, para corrigir a posição dos dentes.</p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-teeth-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Estética Dental</h3>
+                    <p class="text-gray-600">Procedimentos para harmonizar o sorriso, incluindo facetas de porcelana e restaurações estéticas.</p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-tooth"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Endodontia</h3>
+                    <p class="text-gray-600">Tratamento de canal com microscópio operatório para maior precisão e conforto durante o procedimento.</p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-gray-50 rounded-xl p-6 shadow-md hover:shadow-lg transition card-hover">
+                    <div class="text-teal-500 text-4xl mb-4">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-gray-800">Odontopediatria</h3>
+                    <p class="text-gray-600">Atendimento especializado para crianças, com ambiente lúdico e técnicas adaptadas para os pequenos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <h2 class="text-3xl font-bold mb-4 text-gray-800">Sobre a ODONTOLOGIA VIGIA</h2>
+                    <p class="text-gray-600 mb-6">Fundada em 2010, a da Doutor JUNIOR, nasceu com o propósito de oferecer tratamentos odontológicos de excelência, combinando tecnologia avançada com atendimento humanizado.</p>
+                    <p class="text-gray-600 mb-6">Nossa equipe é composta por especialistas em diversas áreas da odontologia, constantemente atualizados com as mais recentes técnicas e tecnologias do mercado.</p>
+                    <p class="text-gray-600 mb-6">Nosso consultório foi projetado para oferecer conforto e bem-estar, com equipamentos de última geração e um ambiente acolhedor que ajuda a reduzir a ansiedade comum em consultórios dentários.</p>
+                    <div class="flex space-x-4">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-teal-600">12+</div>
+                            <div class="text-gray-600">Anos de Experiência</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-teal-600">5K+</div>
+                            <div class="text-gray-600">Pacientes Atendidos</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-teal-600">15+</div>
+                            <div class="text-gray-600">Especialistas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1620207418302-439b387441b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Consultório odontológico" class="rounded-lg shadow-md h-64 w-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1564424224827-3ac2c16ca72a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Equipe odontológica" class="rounded-lg shadow-md h-64 w-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Atendimento odontológico" class="rounded-lg shadow-md h-64 w-full object-cover">
+                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Tecnologia odontológica" class="rounded-lg shadow-md h-64 w-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointment Section -->
+
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">O que nossos pacientes dizem</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">A satisfação dos nossos pacientes é nossa maior recompensa.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"O tratamento na dr(a) Fernanda Lara foi excelente. A equipe é muito atenciosa e o dentista explicou tudo com muita clareza. Meu sorriso nunca esteve tão bonito!"</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Ana Silva" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Ana Silva</h4>
+                            <p class="text-gray-600 text-sm">Paciente desde 2018</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Tinha muito medo de dentista, mas na Dr(a) Fernanda Lara me senti super confortável. O ambiente é acolhedor e o tratamento foi indolor. Recomendo muito!"</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Carlos Oliveira" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Carlos Oliveira</h4>
+                            <p class="text-gray-600 text-sm">Paciente desde 2020</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 text-xl">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Meus filhos adoram ir ao dentista graças à odontopediatra da Doutora Fernanda Lara. O espaço infantil é encantador e ela tem uma abordagem perfeita com crianças."</p>
+                    <div class="flex items-center">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Mariana Costa" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Mariana Costa</h4>
+                            <p class="text-gray-600 text-sm">Mãe de pacientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Client Dashboard (Hidden by default) -->
+    <div id="client-dashboard" class="hidden py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row">
+                <!-- Sidebar -->
+                <div class="md:w-1/4 mb-8 md:mb-0 md:pr-8">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="flex items-center mb-6">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h3 class="font-bold text-gray-800" id="dashboard-username">Ana Silva</h3>
+                                <p class="text-sm text-gray-600">Paciente desde 2018</p>
+                            </div>
+                        </div>
+                        <nav>
+                            <a href="#dashboard" class="block py-3 px-4 bg-teal-50 text-teal-600 rounded-lg font-medium mb-2"><i class="fas fa-home mr-2"></i> Visão Geral</a>
+                            <a href="#appointments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-calendar-alt mr-2"></i> Meus Agendamentos</a>
+                            <a href="#treatments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-tooth mr-2"></i> Meus Tratamentos</a>
+                            <a href="#documents" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-file-alt mr-2"></i> Documentos</a>
+                            <a href="#payments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-credit-card mr-2"></i> Pagamentos</a>
+                            <a href="#profile" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-user mr-2"></i> Meu Perfil</a>
+                            <a href="#logout" class="block py-3 px-4 hover:bg-gray-100 rounded-lg text-red-500"><i class="fas fa-sign-out-alt mr-2"></i> Sair</a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="md:w-3/4">
+                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Bem-vindo de volta, <span id="dashboard-greeting">Ana</span>!</h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Dashboard Card 1 -->
+                            <div class="bg-teal-50 rounded-lg p-6 dashboard-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-gray-600 mb-1">Próxima Consulta</h3>
+                                        <p class="text-2xl font-bold text-gray-800">15/07/2023</p>
+                                        <p class="text-gray-600">14:30 - Clareamento</p>
+                                    </div>
+                                    <div class="bg-teal-100 p-3 rounded-full">
+                                        <i class="fas fa-calendar-check text-teal-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dashboard Card 2 -->
+                            <div class="bg-blue-50 rounded-lg p-6 dashboard-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-gray-600 mb-1">Tratamento Atual</h3>
+                                        <p class="text-2xl font-bold text-gray-800">Ortodontia</p>
+                                        <p class="text-gray-600">Sessão 5 de 12</p>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i class="fas fa-tooth text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dashboard Card 3 -->
+                            <div class="bg-purple-50 rounded-lg p-6 dashboard-card">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-gray-600 mb-1">Documentos</h3>
+                                        <p class="text-2xl font-bold text-gray-800">3</p>
+                                        <p class="text-gray-600">Disponíveis</p>
+                                    </div>
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <i class="fas fa-file-alt text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Seus Próximos Compromissos</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="py-3 px-4 text-left text-gray-700">Data</th>
+                                        <th class="py-3 px-4 text-left text-gray-700">Horário</th>
+                                        <th class="py-3 px-4 text-left text-gray-700">Procedimento</th>
+                                        <th class="py-3 px-4 text-left text-gray-700">Dentista</th>
+                                        <th class="py-3 px-4 text-left text-gray-700">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                        <td class="py-3 px-4">15/07/2023</td>
+                                        <td class="py-3 px-4">14:30</td>
+                                        <td class="py-3 px-4">Clareamento Dental</td>
+                                        <td class="py-3 px-4">Dra. Carla Mendes</td>
+                                        <td class="py-3 px-4">
+                                            <button class="text-teal-600 hover:text-teal-800 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                        <td class="py-3 px-4">30/07/2023</td>
+                                        <td class="py-3 px-4">10:00</td>
+                                        <td class="py-3 px-4">Manutenção Ortodôntica</td>
+                                        <td class="py-3 px-4">Dr. Roberto Almeida</td>
+                                        <td class="py-3 px-4">
+                                            <button class="text-teal-600 hover:text-teal-800 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="py-3 px-4">12/08/2023</td>
+                                        <td class="py-3 px-4">16:15</td>
+                                        <td class="py-3 px-4">Consulta de Rotina</td>
+                                        <td class="py-3 px-4">Dra. Carla Mendes</td>
+                                        <td class="py-3 px-4">
+                                            <button class="text-teal-600 hover:text-teal-800 mr-3"><i class="fas fa-eye"></i></button>
+                                            <button class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Seus Tratamentos em Andamento</h3>
+                        <div class="space-y-4">
+                            <!-- Treatment 1 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-800">Ortodontia - Aparelho Fixo</h4>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Em Andamento</span>
+                                </div>
+                                <p class="text-gray-600 mb-3">Tratamento ortodôntico para correção de mordida cruzada e alinhamento dentário.</p>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="text-sm text-gray-500">Início: 15/03/2023</span>
+                                        <span class="mx-2 text-gray-300">|</span>
+                                        <span class="text-sm text-gray-500">Previsão: 15/03/2024</span>
+                                    </div>
+                                    <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 42%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Treatment 2 -->
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-800">Clareamento Dental</h4>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Quase Concluído</span>
+                                </div>
+                                <p class="text-gray-600 mb-3">Clareamento dental com moldeira para remoção de manchas e escurecimento.</p>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="text-sm text-gray-500">Início: 10/05/2023</span>
+                                        <span class="mx-2 text-gray-300">|</span>
+                                        <span class="text-sm text-gray-500">Previsão: 30/07/2023</span>
+                                    </div>
+                                    <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Entre em Contato</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">Estamos sempre disponíveis para tirar suas dúvidas e agendar sua consulta.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <div class="bg-gray-50 rounded-xl p-8 shadow-md">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">Informações de Contato</h3>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="text-teal-600 text-xl mr-4 mt-1">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Endereço</h4>
+                                    <p class="text-gray-600">Tv Lauro Sodre, 113 - Sala 123<br>Vigia - PA, 01310-100</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="text-teal-600 text-xl mr-4 mt-1">
+                                    <i class="fas fa-phone-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Telefone</h4>
+                                    <p class="text-gray-600">(91) 1234-5678<br>(91) 98765-4321 (WhatsApp)</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="text-teal-600 text-xl mr-4 mt-1">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">E-mail</h4>
+                                    <p class="text-gray-600">contato@fernandalara.com.br<br>atendimento@odontologia.com.br</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="text-teal-600 text-xl mr-4 mt-1">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Horário de Funcionamento</h4>
+                                    <p class="text-gray-600">Segunda a Sexta: 8h às 19h<br>Sábado: 8h às 13h<br>Domingo: Fechado</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-bold text-gray-800 mb-4">Nos siga nas redes sociais</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white transition">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white transition">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white transition">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="#" class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-teal-600 hover:text-white transition">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="bg-gray-50 rounded-xl p-8 shadow-md">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">Envie uma Mensagem</h3>
+                        <form>
+                            <div class="mb-4">
+                                <label for="contact-name" class="block text-gray-700 mb-2">Nome Completo</label>
+                                <input type="text" id="contact-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="contact-email" class="block text-gray-700 mb-2">E-mail</label>
+                                <input type="email" id="contact-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="contact-phone" class="block text-gray-700 mb-2">Telefone</label>
+                                <input type="tel" id="contact-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="contact-subject" class="block text-gray-700 mb-2">Assunto</label>
+                                <select id="contact-subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                                    <option value="">Selecione um assunto</option>
+                                    <option value="agendamento">Agendamento de Consulta</option>
+                                    <option value="duvida">Dúvida sobre Tratamento</option>
+                                    <option value="orcamento">Solicitação de Orçamento</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="contact-message" class="block text-gray-700 mb-2">Mensagem</label>
+                                <textarea id="contact-message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-teal-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-teal-700 transition">Enviar Mensagem</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <div class="h-96 w-full">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d912.9326278679417!2d-48.140302395700886!3d-0.8563089585445314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92a6813a3ffa2c35%3A0x6e1722e28d7f30d1!2sConsult%C3%B3rio%20Odontol%C3%B3gico%20Dra%20Fernanda%20Lara!5e1!3m2!1spt-BR!2sbr!4v1752881853480!5m2!1spt-BR!2sbr" width="100%" height="380" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-tooth text-3xl text-teal-400"></i>
+                        <h3 class="text-2xl font-bold">ODONTOLOGIA</h3>
+                    </div>
+                    <p class="text-gray-400">Cuidando do seu sorriso com tecnologia e humanização desde 2010.</p>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-teal-400 transition">Início</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-teal-400 transition">Serviços</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-teal-400 transition">Sobre Nós</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-teal-400 transition">Contato</a></li>
+                        <li><a href="#client-area" class="text-gray-400 hover:text-teal-400 transition">Área do Cliente</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Clareamento Dental</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Implantes Dentários</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Ortodontia</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Estética Dental</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Odontopediatria</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Assine nossa newsletter para receber dicas de saúde bucal e promoções especiais.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Seu e-mail" class="px-4 py-2 rounded-l-lg focus:outline-none text-gray-800 w-full">
+                        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded-r-lg hover:bg-teal-700 transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 ODONTOLOGIA - Todos os direitos reservados. Desenvolvido com <i class="fas fa-heart text-red-400"></i> por nossa equipe.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/5591983252639" target="_blank" class="bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-green-600 transition transform hover:scale-110">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-24 right-6 bg-teal-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-lg hover:bg-teal-700 transition transform hover:scale-110 hidden">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Login Form Submission
+        const loginForm = document.getElementById('loginForm');
+        const clientAreaSection = document.getElementById('client-area');
+        const clientDashboard = document.getElementById('client-dashboard');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Simulate login - in a real app, you would validate credentials with a server
+            clientAreaSection.classList.add('hidden');
+            clientDashboard.classList.remove('hidden');
+
+            // Scroll to top of dashboard
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Register Form Submission
+        const registerForm = document.getElementById('registerForm');
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Simulate registration - in a real app, you would send data to a server
+            alert('Cadastro realizado com sucesso! Agora você pode fazer login.');
+            registerForm.reset();
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

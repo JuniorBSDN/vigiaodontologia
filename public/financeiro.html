@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Financeiro - Clínica Odontológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="max-w-6xl mx-auto p-6">
+        <h1 class="text-3xl font-bold text-blue-800 mb-4">Área Financeira</h1>
+
+        <div class="flex flex-wrap items-center justify-between mb-6">
+            <div>
+                <p class="text-lg font-semibold">Mês atual: <span id="mesAtual" class="text-blue-600"></span></p>
+            </div>
+            <div>
+                <label for="filtroMes" class="mr-2">Selecionar Mês:</label>
+                <select id="filtroMes" class="border p-2 rounded-md"></select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded">
+                <p class="font-bold">Recebido</p>
+                <p id="valorRecebido" class="text-xl text-green-700">R$ 0,00</p>
+            </div>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
+                <p class="font-bold">Pendente</p>
+                <p id="valorPendente" class="text-xl text-yellow-700">R$ 0,00</p>
+            </div>
+            <div class="bg-blue-100 border-l-4 border-blue-500 p-4 rounded">
+                <p class="font-bold">Total Faturado</p>
+                <p id="valorTotalFaturado" class="text-xl text-blue-700">R$ 0,00</p>
+            </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+            <table class="min-w-full table-auto">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="px-4 py-2 text-left">Paciente</th>
+                        <th class="px-4 py-2 text-left">Serviço</th>
+                        <th class="px-4 py-2 text-left">Data</th>
+                        <th class="px-4 py-2 text-left">Valor</th>
+                        <th class="px-4 py-2 text-left">Status</th>
+                        <th class="px-4 py-2 text-left">Forma</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaPagamentosBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold mb-4">Formas de Pagamento Aceitas</h2>
+            <div class="flex gap-4">
+                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+                    <i class="fa-brands fa-pix text-green-600 text-xl"></i> PIX
+                </div>
+                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-credit-card text-blue-600 text-xl"></i> Cartão
+                </div>
+                <div class="bg-white border p-4 rounded shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice-dollar text-yellow-600 text-xl"></i> Boleto
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flaskApiUrl = "http://127.0.0.1:5000"; // Altere para a URL da sua API no deploy
+
+        const mesAtualEl = document.getElementById("mesAtual");
+        const filtroMesSelect = document.getElementById("filtroMes");
+        const valorRecebidoEl = document.getElementById("valorRecebido");
+        const valorPendenteEl = document.getElementById("valorPendente");
+        const valorTotalFaturadoEl = document.getElementById("valorTotalFaturado");
+        const tabelaPagamentosBody = document.getElementById("tabelaPagamentosBody");
+
+        async function carregarDadosFinanceiros(ano, mes) {
+            try {
+                const response = await fetch(`${flaskApiUrl}/financeiro/dados?ano=${ano}&mes=${mes}`);
+                if (!response.ok) {
+                    throw new Error("Erro ao carregar dados financeiros.");
+                }
+                const data = await response.json();
+
+                // Preencher o resumo
+                valorRecebidoEl.textContent = data.resumo.recebido;
+                valorPendenteEl.textContent = data.resumo.pendente;
+                valorTotalFaturadoEl.textContent = data.resumo.total_faturado;
+
+                // Preencher a tabela
+                tabelaPagamentosBody.innerHTML = "";
+                data.pagamentos.forEach(pagamento => {
+                    const row = document.createElement("tr");
+                    row.className = "border-b";
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${pagamento.paciente}</td>
+                        <td class="px-4 py-2">${pagamento.servico}</td>
+                        <td class="px-4 py-2">${pagamento.data}</td>
+                        <td class="px-4 py-2">${pagamento.valor}</td>
+                        <td class="px-4 py-2 font-bold text-${pagamento.status === 'Pago' ? 'green' : 'yellow'}-600">${pagamento.status}</td>
+                        <td class="px-4 py-2">${pagamento.forma}</td>
+                    `;
+                    tabelaPagamentosBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Falha ao carregar dados financeiros:", error);
+                alert("Não foi possível carregar os dados financeiros.");
+            }
+        }
+
+        function preencherFiltroMes() {
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho',
+                           'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const hoje = new Date();
+            const mesAtual = hoje.getMonth() + 1; // getMonth é 0-indexado
+            const anoAtual = hoje.getFullYear();
+
+            meses.forEach((mes, index) => {
+                const option = document.createElement("option");
+                const mesNumero = index + 1;
+                option.value = `${anoAtual}-${mesNumero}`;
+                option.textContent = `${mes} ${anoAtual}`;
+                if (mesNumero === mesAtual) {
+                    option.selected = true;
+                    mesAtualEl.textContent = `${mes} ${anoAtual}`;
+                }
+                filtroMesSelect.appendChild(option);
+            });
+
+            filtroMesSelect.addEventListener("change", (e) => {
+                const [ano, mes] = e.target.value.split('-').map(Number);
+                const mesNome = meses[mes - 1];
+                mesAtualEl.textContent = `${mesNome} ${ano}`;
+                carregarDadosFinanceiros(ano, mes);
+            });
+
+            carregarDadosFinanceiros(anoAtual, mesAtual);
+        }
+
+        document.addEventListener("DOMContentLoaded", preencherFiltroMes);
+    </script>
+</body>
+</html>

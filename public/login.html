@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Clínica Odontológica</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome para ícones -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Font Inter para melhor estética -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Login do Paciente</h2>
+
+    <!---------------- FORMULARIO DO LOGIN----------------------------->
+    <form id="loginForm" class="space-y-5">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+        <input type="email" id="email" required
+               class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+               placeholder="seu.email@exemplo.com" />
+      </div>
+      <div>
+        <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+        <input type="password" id="senha" required
+               class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+               placeholder="Sua senha" />
+      </div>
+
+      <!----------------- BOTÕES E LINKS PARA A VALIDAÇÃO --------------------------->
+      <a href="esquecisenha.html"
+         class="mt-3 block text-center text-sm text-blue-600 hover:underline transition duration-200 ease-in-out">
+        Esqueci minha senha
+      </a>
+
+      <button type="submit"
+              class="w-full bg-blue-700 text-white py-2.5 rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out shadow-lg">
+        Entrar
+      </button>
+    </form>
+
+    <button onclick="window.location.href='cadastro.html'" type="button"
+            class="w-full mt-4 flex items-center justify-center py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-200 ease-in-out">
+        Cadastre-se
+    </button>
+
+    <div class="my-6 text-center text-sm text-gray-500">ou</div>
+
+    <!--------------------- BOTÃO DO GOOGLE ------------------->
+    <div class="text-center">
+      <button id="googleLoginBtn"
+              class="flex items-center justify-center gap-3 w-full border border-gray-300 py-2.5 rounded-lg hover:bg-gray-100 transition duration-200 ease-in-out shadow-sm">
+        <i class="fab fa-google text-red-600 text-lg"></i>
+        <span class="text-gray-700 font-medium">Entrar com o Google</span>
+      </button>
+    </div>
+
+    <a href="index.html"
+       class="mt-6 block text-center text-sm text-blue-600 hover:underline transition duration-200 ease-in-out">Voltar ao Início</a>
+
+    <!------------ MENSAGEM DE ERRO -------------->
+    <p id="mensagem" class="mt-4 text-center text-red-600 font-semibold hidden"></p>
+  </div>
+
+  <script type="module">
+    // Importe as funções necessárias dos SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    // Sua configuração do Firebase (agora com os dados reais do seu projeto)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXlox_S8zU5PddqV9E1msIS8F1l6UsMfM",
+      authDomain: "sema-vigia.firebaseapp.com",
+      projectId: "sema-vigia",
+      storageBucket: "sema-vigia.firebasestorage.app",
+      messagingSenderId: "995439184565",
+      appId: "1:995439184565:web:dd33b93a95db5c0b3e0cfc"
+    };
+
+    // Inicialize o Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app); // Obtenha a instância de autenticação
+    const db = getFirestore(app); // Obtenha a instância do Firestore
+    const usuariosRef = collection(db, 'USUARIO'); // Referência à coleção de usuários
+
+    // URL completa para a sua API Flask
+    // ATENÇÃO: Ao implantar na Vercel, esta URL DEVE ser a URL pública da sua API Flask.
+    // Por exemplo: "https://sua-api-flask.vercel.app" ou "https://api.seusite.com"
+    // Para desenvolvimento local, mantenha "http://127.0.0.1:5000"
+    const flaskApiUrl = "http://127.0.0.1:5000";
+
+    // Função para exibir mensagens de erro/sucesso
+    function showMessage(text, isError = true) {
+      const msg = document.getElementById("mensagem");
+      msg.textContent = text;
+      msg.classList.remove("hidden");
+      if (isError) {
+        msg.classList.remove("text-green-600");
+        msg.classList.add("text-red-600");
+      } else {
+        msg.classList.remove("text-red-600");
+        msg.classList.add("text-green-600");
+      }
+    }
+
+    // Login com email/senha (continua usando sua API Flask)
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+      const msg = document.getElementById("mensagem");
+
+      try {
+        const res = await fetch(`${flaskApiUrl}/login_usuario`, { // Usando URL absoluta
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, senha })
+        });
+        const data = await res.json();
+        if (data.usuario) {
+          localStorage.setItem("usuario", JSON.stringify(data.usuario));
+          showMessage("Login realizado com sucesso!", false); // Mensagem de sucesso
+          window.location.href = "area_paciente.html";
+        } else {
+          showMessage(data.erro); // Exibe erro da API Flask
+        }
+      } catch (err) {
+        console.error("Erro ao conectar com o servidor ou realizar login:", err);
+        showMessage("Erro ao conectar com o servidor. Tente novamente mais tarde.");
+      }
+    });
+
+    // Login com Google (usando Firebase Authentication)
+    async function loginGoogle() {
+      const provider = new GoogleAuthProvider(); // Instância do provedor Google
+      try {
+        const result = await signInWithPopup(auth, provider); // Usa signInWithPopup do Firebase Auth
+        const user = result.user;
+
+        const usuario = {
+          nome: user.displayName,
+          email: user.email
+        };
+
+        // Consulta o Firestore para ver se o usuário já existe
+        const q = query(usuariosRef, where("email", "==", usuario.email));
+        const snap = await getDocs(q); // Usa getDocs para obter documentos da query
+
+        if (snap.empty) {
+          // Se o usuário não existe, adiciona ao Firestore
+          await addDoc(usuariosRef, usuario); // Usa addDoc para adicionar novo documento
+          localStorage.setItem("usuario", JSON.stringify(usuario));
+          showMessage("Novo usuário Google cadastrado! Complete seu perfil.", false);
+          window.location.href = "perfil.html"; // Redireciona para completar cadastro
+        } else {
+          // Se o usuário já existe, carrega os dados existentes
+          const dados = snap.docs[0].data();
+          localStorage.setItem("usuario", JSON.stringify(dados));
+          showMessage("Login com Google realizado com sucesso!", false);
+          window.location.href = "area_paciente.html"; // Redireciona para a área do paciente
+        }
+      } catch (err) {
+        console.error("Erro ao entrar com o Google:", err);
+        // Trata erros específicos do Firebase Auth
+        let errorMessage = "Erro ao entrar com o Google. Tente novamente.";
+        if (err.code === 'auth/popup-closed-by-user') {
+          errorMessage = "Login com Google cancelado.";
+        } else if (err.code === 'auth/cancelled-popup-request') {
+          errorMessage = "Uma janela de login do Google já está aberta.";
+        } else if (err.code === 'auth/network-request-failed') {
+          errorMessage = "Problema de conexão com a internet. Verifique sua rede.";
+        } else if (err.code === 'auth/invalid-api-key') {
+          errorMessage = "Erro de configuração: Chave de API inválida. Contate o suporte.";
+        }
+        showMessage(errorMessage);
+      }
+    }
+
+    // Adiciona o event listener ao botão do Google após o DOM ser carregado
+    document.addEventListener('DOMContentLoaded', () => {
+      const googleLoginButton = document.getElementById('googleLoginBtn');
+      if (googleLoginButton) {
+        googleLoginButton.addEventListener('click', loginGoogle);
+      }
+    });
+  </script>
+</body>
+</html>

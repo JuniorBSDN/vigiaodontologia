@@ -1,0 +1,178 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials, firestore
+import os
+import json
+import bcrypt # Importa a biblioteca bcrypt
+
+app = Flask(__name__)
+CORS(app)
+
+# Firebase via variável de ambiente
+firebase_credentials_json = os.getenv("FIREBASE_CREDENTIALS")
+if firebase_credentials_json:
+    try:
+        cred_dict = json.loads(firebase_credentials_json)
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar JSON da variável FIREBASE_CREDENTIALS: {e}")
+        exit(1)
+else:
+    try:
+        # ATENÇÃO: Substitua 'path/to/your/serviceAccountKey.json' pelo caminho real
+        with open('path/to/your/serviceAccountKey.json', 'r') as f:
+            cred_dict = json.load(f)
+    except FileNotFoundError:
+        print("Erro: FIREBASE_CREDENTIALS não definida e serviceAccountKey.json não encontrado.")
+        print(
+            "Por favor, defina a variável de ambiente FIREBASE_CREDENTIALS no Vercel ou forneça o arquivo de credenciais localmente.")
+        exit(1)
+
+cred = credentials.Certificate(cred_dict)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+usuarios_ref = db.collection('USUARIO')
+agendamentos_ref = db.collection('AGENDAMENTOS')
+
+# ---
+## Endpoints
+# ---
+
+@app.route("/cadastrar_usuario", methods=["POST"])
+def cadastrar_usuario():
+    dados = request.get_json()
+    nome = dados.get("nome")
+    email = dados.get("email")
+    senha = dados.get("senha")
+
+    if not nome or not email or not senha:
+        return jsonify({"erro": "Campos obrigatórios faltando."}), 400
+
+    ja_existe = usuarios_ref.where("email", "==", email).get()
+    if ja_existe:
+        return jsonify({"erro": "E-mail já cadastrado."}), 409
+
+    try:
+        # Hashing da senha antes de salvar no banco de dados
+        hashed_password = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+
+        usuarios_ref.add({
+            "nome": nome,
+            "email": email,
+            "senha": hashed_password.decode('utf-8')
+        })
+        return jsonify({"mensagem": "Usuário cadastrado com sucesso."}), 201
+    except Exception as e:
+        print(f"Erro ao cadastrar usuário: {e}")
+        return jsonify({"erro": "Erro interno ao cadastrar usuário."}), 500
+
+
+@app.route("/completar_perfil", methods=["POST"])
+def completar_perfil():
+    dados = request.get_json()
+    email = dados.get("email")
+
+    if not email:
+        return jsonify({"erro": "E-mail é obrigatório."}), 400
+
+    consulta = usuarios_ref.where("email", "==", email).get()
+    if not consulta:
+        return jsonify({"erro": "Usuário não encontrado."}), 404
+
+    usuario_doc_ref = consulta[0].reference
+
+    campos = {
+        "cpf": dados.get("cpf"),
+        "telefone": dados.get("telefone"),
+        "data_nascimento": dados.get("data_nascimento"),
+        "sexo": dados.get("sexo"),
+        "endereco": dados.get("endereco"),
+        "plano": dados.get("plano"),
+        "quick_notes": dados.get("quick_notes")
+    }
+
+    campos_para_atualizar = {k: v for k, v in campos.items() if v is not None}
+
+    try:
+        usuario_doc_ref.update(campos_para_atualizar)
+        return jsonify({"mensagem": "Perfil atualizado com sucesso."}), 200
+    except Exception as e:
+        print(f"Erro ao atualizar perfil: {e}")
+        return jsonify({"erro": "Erro interno ao atualizar perfil."}), 500
+
+
+@app.route("/login_usuario", methods=["POST"])
+def login_usuario():
+    dados = request.get_json()
+    email = dados.get("email")
+    senha = dados.get("senha")
+
+    if not email or not senha:
+        return jsonify({"erro": "Email e senha obrigatórios."}), 400
+
+    consulta = usuarios_ref.where("email", "==", email).get()
+    if not consulta:
+        return jsonify({"erro": "Usuário ou senha incorretos."}), 401
+
+    usuario_doc = consulta[0]
+    usuario_data = usuario_doc.to_dict()
+    senha_hash_salva = usuario_data.get("senha")
+
+    # Verificação da senha com o hash salvo
+    if senha_hash_salva and bcrypt.checkpw(senha.encode('utf-8'), senha_hash_salva.encode('utf-8')):
+        usuario_data.pop("senha", None)
+        return jsonify({
+            "mensagem": "Login válido",
+            "usuario": usuario_data
+        }), 200
+    else:
+        return jsonify({"erro": "Usuário ou senha incorretos."}), 401
+
+
+@app.route("/agendar_consulta", methods=["POST"])
+def agendar_consulta():
+    dados = request.get_json()
+
+    required_fields = ["email", "data_consulta", "hora_consulta", "dentista", "procedimento"]
+    for field in required_fields:
+        if field not in dados or not dados[field]:
+            return jsonify({"erro": f"Campo '{field}' é obrigatório."}), 400
+
+    email_paciente = dados.get("email")
+
+    agendamento_data = {
+        "email_paciente": email_paciente,
+        "data_consulta": dados.get("data_consulta"),
+        "hora_consulta": dados.get("hora_consulta"),
+        "dentista": dados.get("dentista"),
+        "procedimento": dados.get("procedimento"),
+        "status": "Pendente",
+        "timestamp": firestore.SERVER_TIMESTAMP
+    }
+
+    if "relato_cliente" in dados:
+        agendamento_data["relato_cliente"] = dados.get("relato_cliente")
+    if "diabetes" in dados:
+        agendamento_data["diabetes"] = dados.get("diabetes")
+    if "hipertensao" in dados:
+        agendamento_data["hipertensao"] = dados.get("hipertensao")
+    if "cardio" in dados:
+        agendamento_data["cardio"] = dados.get("cardio")
+    if "alergias" in dados:
+        agendamento_data["alergias"] = dados.get("alergias")
+    if "coagulacao" in dados:
+        agendamento_data["coagulacao"] = dados.get("coagulacao")
+    if "none" in dados:
+        agendamento_data["none"] = dados.get("none")
+    if "medication" in dados:
+        agendamento_data["medication"] = dados.get("medication")
+    if "dentes_afetados" in dados:
+        agendamento_data["dentes_afetados"] = dados.get("dentes_afetados")
+
+    try:
+        agendamentos_ref.add(agendamento_data)
+        return jsonify({"mensagem": "Agendamento realizado com sucesso."}), 201
+    except Exception as e:
+        print(f"Erro ao agendar consulta: {e}")
+        return jsonify({"erro": "Erro interno ao agendar consulta."}), 500

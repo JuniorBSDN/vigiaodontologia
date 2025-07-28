@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário Odontológico - Sorriso Perfeito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tooth-chart {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+        }
+        .tooth {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .tooth.selected {
+            background-color: #93c5fd; /* Tailwind blue-200 */
+        }
+        .tooth-number {
+            font-size: 10px;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tooth-problem {
+            font-size: 8px;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .dental-chart-container {
+            transform: rotateX(180deg); /* Inverte para a visualização correta */
+        }
+        .drawing-area {
+            border: 1px dashed #ccc;
+            position: relative;
+        }
+        .drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        @media (max-width: 768px) {
+            .tooth {
+                width: 20px;
+                height: 20px;
+            }
+            .tooth-number {
+                font-size: 8px;
+                top: -10px;
+            }
+        }
+        /* Style for feedback message */
+        #prontuarioMessage {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        #prontuarioMessage.text-red-600 {
+            background-color: #fee2e2; /* bg-red-100 */
+            border: 1px solid #ef4444; /* border-red-500 */
+        }
+        #prontuarioMessage.text-green-600 {
+            background-color: #dcfce7; /* bg-green-100 */
+            border: 1px solid #22c55e; /* border-green-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<button onclick="window.location.assign('/area_paciente.html')" type="button" class="w-full mt-2 flex justify-left py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all">
+        Voltar
+      </button>
+<div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-blue-800">ODONTOLOGIA VIGIA</h1>
+                    <p class="text-gray-600">Clínica Odontológica</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" id="searchPatientInput" placeholder="Buscar paciente..." class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Novo
+                    </button>
+                </div>
+            </div>
+            <div class="bg-white shadow rounded-lg p-4">
+                <div class="flex flex-wrap items-center justify-between">
+                    <div class="flex items-center mb-2 md:mb-0">
+                        <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-4">
+                            <i class="fas fa-user text-3xl text-gray-400"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold" id="patientNameHeader">Carregando...</h2>
+                            <div class="flex flex-wrap items-center text-sm text-gray-600">
+                                <span class="mr-3"><i class="fas fa-id-card mr-1"></i> CPF: <span id="patientCpfHeader">Carregando...</span></span>
+                                <span class="mr-3"><i class="fas fa-birthday-cake mr-1"></i> <span id="patientAgeHeader">Carregando...</span></span>
+                                <span><i class="fas fa-phone mr-1"></i> <span id="patientPhoneHeader">Carregando...</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-print mr-1"></i> Imprimir
+                        </button>
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-envelope mr-1"></i> Enviar
+                        </button>
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Patient Info -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-800 border-b pb-2">Informações do Paciente</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                            <input type="text" id="patientName" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
+                            <input type="date" id="patientDob" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                            <input type="text" id="patientCpf" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sexo</label>
+                            <input type="text" id="patientGender" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                            <input type="tel" id="patientPhone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                            <input type="email" id="patientEmail" readonly class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100 cursor-not-allowed">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+                            <input type="text" id="patientAddress" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Plano Odontológico</label>
+                            <input type="text" id="patientPlan" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <button id="savePatientInfoBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm">
+                        Salvar Informações
+                    </button>
+                </div>
+
+                <!-- Dental Chart -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-800 border-b pb-2">Odontograma</h3>
+                    <div class="dental-chart-container">
+                        <!-- Upper Jaw -->
+                        <div class="tooth-chart mb-8">
+                            <!-- Upper Right Quadrant -->
+                            <div class="tooth" data-tooth="18"><span class="tooth-number">18</span></div>
+                            <div class="tooth" data-tooth="17"><span class="tooth-number">17</span></div>
+                            <div class="tooth" data-tooth="16"><span class="tooth-number">16</span></div>
+                            <div class="tooth" data-tooth="15"><span class="tooth-number">15</span></div>
+                            <div class="tooth" data-tooth="14"><span class="tooth-number">14</span></div>
+                            <div class="tooth" data-tooth="13"><span class="tooth-number">13</span></div>
+                            <div class="tooth" data-tooth="12"><span class="tooth-number">12</span></div>
+                            <div class="tooth" data-tooth="11"><span class="tooth-number">11</span></div>
+
+                            <!-- Upper Left Quadrant -->
+                            <div class="tooth" data-tooth="21"><span class="tooth-number">21</span></div>
+                            <div class="tooth" data-tooth="22"><span class="tooth-number">22</span></div>
+                            <div class="tooth" data-tooth="23"><span class="tooth-number">23</span></div>
+                            <div class="tooth" data-tooth="24"><span class="tooth-number">24</span></div>
+                            <div class="tooth" data-tooth="25"><span class="tooth-number">25</span></div>
+                            <div class="tooth" data-tooth="26"><span class="tooth-number">26</span></div>
+                            <div class="tooth" data-tooth="27"><span class="tooth-number">27</span></div>
+                            <div class="tooth" data-tooth="28"><span class="tooth-number">28</span></div>
+                        </div>
+
+                        <!-- Lower Jaw -->
+                        <div class="tooth-chart">
+                            <!-- Lower Right Quadrant -->
+                            <div class="tooth" data-tooth="48"><span class="tooth-number">48</span></div>
+                            <div class="tooth" data-tooth="47"><span class="tooth-number">47</span></div>
+                            <div class="tooth" data-tooth="46"><span class="tooth-number">46</span></div>
+                            <div class="tooth" data-tooth="45"><span class="tooth-number">45</span></div>
+                            <div class="tooth" data-tooth="44"><span class="tooth-number">44</span></div>
+                            <div class="tooth" data-tooth="43"><span class="tooth-number">43</span></div>
+                            <div class="tooth" data-tooth="42"><span class="tooth-number">42</span></div>
+                            <div class="tooth" data-tooth="41"><span class="tooth-number">41</span></div>
+
+                            <!-- Lower Left Quadrant -->
+                            <div class="tooth" data-tooth="31"><span class="tooth-number">31</span></div>
+                            <div class="tooth" data-tooth="32"><span class="tooth-number">32</span></div>
+                            <div class="tooth" data-tooth="33"><span class="tooth-number">33</span></div>
+                            <div class="tooth" data-tooth="34"><span class="tooth-number">34</span></div>
+                            <div class="tooth" data-tooth="35"><span class="tooth-number">35</span></div>
+                            <div class="tooth" data-tooth="36"><span class="tooth-number">36</span></div>
+                            <div class="tooth" data-tooth="37"><span class="tooth-number">37</span></div>
+                            <div class="tooth" data-tooth="38"><span class="tooth-number">38</span></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-sm flex items-center justify-center">
+                            <i class="fas fa-tooth mr-2"></i> Cárie
+                        </button>
+                        <button class="bg-red-100 text-red-800 px-3 py-1 rounded-lg text-sm flex items-center justify-center">
+                            <i class="fas fa-tooth mr-2"></i> Extração
+                        </button>
+                        <button class="bg-green-100 text-green-800 px-3 py-1 rounded-lg text-sm flex items-center justify-center">
+                            <i class="fas fa-tooth mr-2"></i> Restauração
+                        </button>
+                        <button class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-lg text-sm flex items-center justify-center">
+                            <i class="fas fa-tooth mr-2"></i> Prótese
+                        </button>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Anotações do Odontograma</label>
+                        <textarea id="odontogramNotes" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="Anotações sobre o odontograma..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Treatment History -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-blue-800">Histórico de Atendimentos</h3>
+                        <button onclick="window.location.assign('/agendamento.html')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center">
+                            <i class="fas fa-plus mr-1"></i> Novo Atendimento
+                        </button>
+                    </div>
+
+                    <div id="treatmentHistoryList" class="space-y-4">
+                        <!-- Treatment items will be loaded here dynamically -->
+                        <p class="text-gray-500 text-center">Nenhum histórico de atendimento encontrado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <!-- Medical History -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-800 border-b pb-2">Histórico Médico</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Alergias</label>
+                            <input type="text" id="medicalAlergias" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Medicações em uso</label>
+                            <input type="text" id="medicalMedication" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Doenças pré-existentes</label>
+                            <input type="text" id="medicalDiseases" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+                            <textarea id="medicalObservations" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button id="saveMedicalHistoryBtn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm">
+                        Salvar Histórico Médico
+                    </button>
+                </div>
+
+                <!-- Next Appointments -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-800 border-b pb-2">Próximos Agendamentos</h3>
+                    <div id="nextAppointmentsList" class="space-y-3">
+                        <p class="text-gray-500 text-center">Nenhum agendamento futuro encontrado.</p>
+                    </div>
+
+                    <button onclick="window.location.assign('/agendamento.html')" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Agendar Nova Consulta
+                    </button>
+                </div>
+
+                <!-- Documents -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-blue-800">Documentos</h3>
+                        <button class="text-blue-600 hover:text-blue-800 text-sm flex items-center">
+                            <i class="fas fa-plus mr-1"></i> Adicionar
+                        </button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                            <div class="bg-red-100 text-red-800 p-2 rounded-lg mr-3">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-sm">Radiografia panorâmica</h4>
+                                <p class="text-xs text-gray-600">05/01/2023 - 1.2MB</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                            <div class="bg-blue-100 text-blue-800 p-2 rounded-lg mr-3">
+                                <i class="fas fa-file-image"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-sm">Fotos intraorais</h4>
+                                <p class="text-xs text-gray-600">15/05/2023 - 3.5MB</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                            <div class="bg-green-100 text-green-800 p-2 rounded-lg mr-3">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-sm">Termo de consentimento</h4>
+                                <p class="text-xs text-gray-600">05/01/2023 - 0.5MB</p>
+                            </div>
+                            <button class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Notes -->
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-800 border-b pb-2">Anotações Rápidas</h3>
+                    <textarea id="quickNotes" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Digite suas anotações aqui..."></textarea>
+                    <button id="saveQuickNotesBtn" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm">
+                        Salvar Anotação
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p id="prontuarioMessage" class="hidden"></p>
+
+    <script type="module">
+        // Importe as funções necessárias dos SDKs do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Sua configuração do Firebase (a mesma usada nas outras páginas)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXlox_S8zU5PddqV9E1msIS8F1l6UsMfM",
+            authDomain: "sema-vigia.firebaseapp.com",
+            projectId: "sema-vigia",
+            storageBucket: "sema-vigia.firebasestorage.app",
+            messagingSenderId: "995439184565",
+            appId: "1:995439184565:web:dd33b93a95db5c0b3e0cfc"
+        };
+
+        // Inicialize o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const usuariosRef = collection(db, 'USUARIO');
+        const agendamentosRef = collection(db, 'AGENDAMENTOS');
+
+        // URL completa para a sua API Flask
+        // ATENÇÃO: Ao implantar na Vercel, esta URL DEVE ser a URL pública da sua API Flask.
+        // Por exemplo: "https://sua-api-flask.vercel.app" ou "https://api.seusite.com"
+        // Para desenvolvimento local, mantenha "http://127.0.0.1:5000"
+        const flaskApiUrl = "http://127.0.0.1:5000";
+
+        // Função para exibir mensagens de feedback
+        function showProntuarioMessage(text, isError = true) {
+            const msg = document.getElementById("prontuarioMessage");
+            msg.textContent = text;
+            msg.classList.remove("hidden");
+            if (isError) {
+                msg.classList.remove("text-green-600");
+                msg.classList.add("text-red-600");
+            } else {
+                msg.classList.remove("text-red-600");
+                msg.classList.add("text-green-600");
+            }
+            setTimeout(() => {
+                msg.classList.add("hidden");
+            }, 5000);
+        }
+
+        // Função para calcular idade
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Função para carregar e exibir os dados do paciente
+        async function loadPatientData(user) {
+            if (!user || !user.email) {
+                showProntuarioMessage("Nenhum usuário autenticado. Redirecionando para login.", true);
+                setTimeout(() => { window.location.assign('/login.html'); }, 2000);
+                return;
+            }
+
+            const userEmail = user.email;
+            let userData = null;
+            let userDocId = null;
+
+            try {
+                // Tenta buscar no localStorage primeiro
+                const storedUser = localStorage.getItem('usuario');
+                if (storedUser) {
+                    userData = JSON.parse(storedUser);
+                }
+
+                // Se não encontrou no localStorage ou se os dados estão incompletos, busca no Firestore
+                if (!userData || !userData.cpf || !userData.telefone) {
+                    const q = query(usuariosRef, where("email", "==", userEmail));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) {
+                        userData = snap.docs[0].data();
+                        userDocId = snap.docs[0].id; // Salva o ID do documento para futuras atualizações
+                        localStorage.setItem('usuario', JSON.stringify(userData)); // Atualiza localStorage
+                    } else {
+                        showProntuarioMessage("Dados do paciente não encontrados no Firestore. Por favor, complete seu perfil.", true);
+                        setTimeout(() => { window.location.assign('/perfil.html'); }, 2000);
+                        return;
+                    }
+                } else {
+                    // Se os dados foram carregados do localStorage, tenta encontrar o docId no Firestore
+                    const q = query(usuariosRef, where("email", "==", userEmail));
+                    const snap = await getDocs(q);
+                    if (!snap.empty) {
+                        userDocId = snap.docs[0].id;
+                    }
+                }
+
+                if (userData) {
+                    // Preencher informações do paciente
+                    document.getElementById('patientNameHeader').textContent = userData.nome || 'N/A';
+                    document.getElementById('patientCpfHeader').textContent = userData.cpf || 'N/A';
+                    document.getElementById('patientPhoneHeader').textContent = userData.telefone || 'N/A';
+                    if (userData.data_nascimento) {
+                        document.getElementById('patientAgeHeader').textContent = `${calculateAge(userData.data_nascimento)} anos` || 'N/A';
+                    } else {
+                        document.getElementById('patientAgeHeader').textContent = 'N/A';
+                    }
+
+                    document.getElementById('patientName').value = userData.nome || '';
+                    document.getElementById('patientDob').value = userData.data_nascimento || '';
+                    document.getElementById('patientCpf').value = userData.cpf || '';
+                    document.getElementById('patientGender').value = userData.sexo || '';
+                    document.getElementById('patientPhone').value = userData.telefone || '';
+                    document.getElementById('patientEmail').value = userData.email || '';
+                    document.getElementById('patientAddress').value = userData.endereco || '';
+                    document.getElementById('patientPlan').value = userData.plano || '';
+
+                    // Preencher histórico médico (dos últimos agendamentos)
+                    // Busca o agendamento mais recente para preencher o histórico médico
+                    const qAgendamentos = query(agendamentosRef, where("email_paciente", "==", userEmail));
+                    const snapAgendamentos = await getDocs(qAgendamentos);
+                    let latestAgendamento = null;
+                    if (!snapAgendamentos.empty) {
+                        // Ordena por timestamp para pegar o mais recente
+                        const sortedAgendamentos = snapAgendamentos.docs.map(doc => doc.data()).sort((a, b) => {
+                            // Firestore timestamp objects need to be converted to actual dates for comparison
+                            const dateA = a.timestamp ? a.timestamp.toDate() : new Date(0); // Fallback for missing timestamp
+                            const dateB = b.timestamp ? b.timestamp.toDate() : new Date(0);
+                            return dateB - dateA; // Descending order
+                        });
+                        latestAgendamento = sortedAgendamentos[0];
+                    }
+
+                    if (latestAgendamento) {
+                        document.getElementById('medicalAlergias').value = latestAgendamento.alergias || '';
+                        document.getElementById('medicalMedication').value = latestAgendamento.medication || '';
+                        // Para doenças pré-existentes, você precisaria de um campo específico na collection de agendamentos
+                        // Por enquanto, vou concatenar os checkboxes de saúde
+                        let diseases = [];
+                        if (latestAgendamento.diabetes) diseases.push('Diabetes');
+                        if (latestAgendamento.hipertensao) diseases.push('Hipertensão');
+                        if (latestAgendamento.cardio) diseases.push('Problemas Cardíacos');
+                        if (latestAgendamento.coagulacao) diseases.push('Problemas de Coagulação');
+                        document.getElementById('medicalDiseases').value = diseases.join(', ') || '';
+
+                        document.getElementById('medicalObservations').value = latestAgendamento.relato_cliente || ''; // Usando relato_cliente como observação
+
+                        // Marcar dentes no odontograma
+                        const problemTeeth = latestAgendamento.dentes_afetados || [];
+                        document.querySelectorAll('.tooth').forEach(toothElement => {
+                            const toothNumber = toothElement.dataset.tooth;
+                            if (problemTeeth.includes(toothNumber)) {
+                                toothElement.classList.add('selected');
+                                // Adicionar indicação de problema se necessário
+                                if (!toothElement.querySelector('.tooth-problem')) {
+                                    const problemSpan = document.createElement('span');
+                                    problemSpan.className = 'tooth-problem';
+                                    problemSpan.textContent = 'Problema'; // Ou o tipo de problema se tiver essa informação
+                                    toothElement.appendChild(problemSpan);
+                                }
+                            } else {
+                                toothElement.classList.remove('selected');
+                                const problemSpan = toothElement.querySelector('.tooth-problem');
+                                if (problemSpan) {
+                                    toothElement.removeChild(problemSpan);
+                                }
+                            }
+                        });
+                    }
+
+                    // Carregar Anotações Rápidas (se houver um campo 'quick_notes' no USUARIO)
+                    document.getElementById('quickNotes').value = userData.quick_notes || '';
+
+                    // Carregar Histórico de Atendimentos (mock data por enquanto)
+                    // Para uma implementação real, você buscaria em uma coleção 'HISTORICO_ATENDIMENTOS'
+                    // ou filtraria os 'AGENDAMENTOS' com status 'Concluído'.
+                    const treatmentHistoryList = document.getElementById('treatmentHistoryList');
+                    treatmentHistoryList.innerHTML = `
+                        <div class="border-l-4 border-blue-500 pl-4 py-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium">Restauração em resina - Dente 36</h4>
+                                    <p class="text-sm text-gray-600">Dr. Carlos Andrade - 15/05/2023</p>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Concluído</span>
+                            </div>
+                            <p class="text-sm mt-1 text-gray-700">Paciente relatou sensibilidade ao frio. Realizada restauração classe II em resina composta.</p>
+                            <div class="mt-2 flex space-x-2">
+                                <button class="text-blue-600 text-sm hover:text-blue-800"><i class="fas fa-eye mr-1"></i> Detalhes</button>
+                                <button class="text-gray-600 text-sm hover:text-gray-800"><i class="fas fa-print mr-1"></i> Imprimir</button>
+                            </div>
+                        </div>
+                        <div class="border-l-4 border-blue-500 pl-4 py-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium">Limpeza e profilaxia</h4>
+                                    <p class="text-sm text-gray-600">Dra. Ana Paula - 10/03/2023</p>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Concluído</span>
+                            </div>
+                            <p class="text-sm mt-1 text-gray-700">Realizada limpeza completa com remoção de tártaro e placa bacteriana. Orientação de higiene reforçada.</p>
+                            <div class="mt-2 flex space-x-2">
+                                <button class="text-blue-600 text-sm hover:text-blue-800"><i class="fas fa-eye mr-1"></i> Detalhes</button>
+                                <button class="text-gray-600 text-sm hover:text-gray-800"><i class="fas fa-print mr-1"></i> Imprimir</button>
+                            </div>
+                        </div>
+                    `; // Exemplo de dados estáticos
+
+                    // Carregar Próximos Agendamentos (do Firestore)
+                    const nextAppointmentsList = document.getElementById('nextAppointmentsList');
+                    nextAppointmentsList.innerHTML = ''; // Limpa antes de adicionar
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Zera hora para comparação de data
+
+                    const qNextAppointments = query(agendamentosRef,
+                        where("email_paciente", "==", userEmail)
+                        // Para filtrar por data futura, você precisaria de um campo de data no formato Date ou Timestamp no Firestore
+                        // where("data_consulta", ">=", today.toISOString().split('T')[0]) // Exemplo se data for string YYYY-MM-DD
+                    );
+                    const snapNextAppointments = await getDocs(qNextAppointments);
+
+                    if (!snapNextAppointments.empty) {
+                        let hasFutureAppointments = false;
+                        snapNextAppointments.docs.forEach(doc => {
+                            const appointment = doc.data();
+                            const appointmentDate = new Date(appointment.data_consulta); // Converte a string de data para objeto Date
+                            if (appointmentDate >= today) { // Compara apenas a data
+                                hasFutureAppointments = true;
+                                const appointmentHtml = `
+                                    <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                                        <div class="bg-blue-100 text-blue-800 p-2 rounded-lg mr-3">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium">${appointment.procedimento}</h4>
+                                            <p class="text-sm text-gray-600">${appointment.data_consulta} - ${appointment.hora_consulta}</p>
+                                            <p class="text-sm mt-1 text-gray-700">${appointment.dentista}</p>
+                                        </div>
+                                    </div>
+                                `;
+                                nextAppointmentsList.insertAdjacentHTML('beforeend', appointmentHtml);
+                            }
+                        });
+                        if (!hasFutureAppointments) {
+                            nextAppointmentsList.innerHTML = '<p class="text-gray-500 text-center">Nenhum agendamento futuro encontrado.</p>';
+                        }
+                    } else {
+                        nextAppointmentsList.innerHTML = '<p class="text-gray-500 text-center">Nenhum agendamento futuro encontrado.</p>';
+                    }
+
+                } else {
+                    showProntuarioMessage("Erro ao carregar dados do paciente.", true);
+                    setTimeout(() => { window.location.assign('/login.html'); }, 2000);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do paciente:", error);
+                showProntuarioMessage("Erro ao carregar dados. Verifique sua conexão.", true);
+                setTimeout(() => { window.location.assign('/login.html'); }, 2000);
+            }
+        }
+
+        // Listener de estado de autenticação do Firebase
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadPatientData(user);
+            } else {
+                showProntuarioMessage("Nenhum usuário autenticado. Redirecionando para login.", true);
+                setTimeout(() => { window.location.assign('/login.html'); }, 2000);
+            }
+        });
+
+        // --- Funcionalidade de salvar informações do paciente ---
+        document.getElementById('savePatientInfoBtn').addEventListener('click', async () => {
+            const userEmail = document.getElementById('patientEmail').value;
+            if (!userEmail) {
+                showProntuarioMessage("E-mail do paciente não encontrado para salvar.", true);
+                return;
+            }
+
+            const updatedData = {
+                nome: document.getElementById('patientName').value,
+                data_nascimento: document.getElementById('patientDob').value,
+                cpf: document.getElementById('patientCpf').value,
+                sexo: document.getElementById('patientGender').value,
+                telefone: document.getElementById('patientPhone').value,
+                endereco: document.getElementById('patientAddress').value,
+                plano: document.getElementById('patientPlan').value
+            };
+
+            try {
+                const q = query(usuariosRef, where("email", "==", userEmail));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    const userDocRef = doc(db, 'USUARIO', snap.docs[0].id);
+                    await updateDoc(userDocRef, updatedData);
+                    showProntuarioMessage("Informações do paciente salvas com sucesso!", false);
+                    // Atualiza o localStorage para manter a consistência
+                    const storedUser = JSON.parse(localStorage.getItem('usuario'));
+                    localStorage.setItem('usuario', JSON.stringify({ ...storedUser, ...updatedData }));
+                } else {
+                    showProntuarioMessage("Usuário não encontrado para atualizar.", true);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar informações do paciente:", error);
+                showProntuarioMessage("Erro ao salvar informações. Tente novamente.", true);
+            }
+        });
+
+        // --- Funcionalidade de salvar histórico médico ---
+        document.getElementById('saveMedicalHistoryBtn').addEventListener('click', async () => {
+            const userEmail = document.getElementById('patientEmail').value;
+            if (!userEmail) {
+                showProntuarioMessage("E-mail do paciente não encontrado para salvar histórico médico.", true);
+                return;
+            }
+
+            // Coleta os dados do histórico médico
+            const updatedMedicalHistory = {
+                alergias: document.getElementById('medicalAlergias').value,
+                medication: document.getElementById('medicalMedication').value,
+                // Para 'Doenças pré-existentes' e 'Observações', você pode precisar de campos específicos
+                // ou uma maneira de identificar qual agendamento está sendo atualizado se houver múltiplos
+                // Por simplicidade, vou salvar as observações médicas no campo 'relato_cliente' do agendamento mais recente
+                // ou em um novo campo no documento do usuário.
+                // Para uma solução mais robusta, considere uma subcoleção 'historico_medico' dentro do documento do usuário.
+                // Por enquanto, vou atualizar o último agendamento ou o documento do usuário (se houver um campo para isso).
+                // Para este exemplo, vou atualizar o último agendamento.
+                // Isso é um pouco simplificado e pode não ser o ideal para um prontuário completo.
+                // O ideal seria ter um sistema de histórico de atendimentos mais detalhado.
+                relato_cliente: document.getElementById('medicalObservations').value // Usando este campo para observações
+            };
+
+            try {
+                // Busca o agendamento mais recente do paciente para atualizar
+                const qAgendamentos = query(agendamentosRef, where("email_paciente", "==", userEmail));
+                const snapAgendamentos = await getDocs(qAgendamentos);
+
+                if (!snapAgendamentos.empty) {
+                    // Encontra o agendamento mais recente para atualizar
+                    const sortedAgendamentos = snapAgendamentos.docs.map(doc => ({ id: doc.id, data: doc.data() })).sort((a, b) => {
+                        const dateA = a.data.timestamp ? a.data.timestamp.toDate() : new Date(0);
+                        const dateB = b.data.timestamp ? b.data.timestamp.toDate() : new Date(0);
+                        return dateB - dateA;
+                    });
+                    const latestAgendamentoDocId = sortedAgendamentos[0].id;
+                    const latestAgendamentoDocRef = doc(db, 'AGENDAMENTOS', latestAgendamentoDocId);
+
+                    await updateDoc(latestAgendamentoDocRef, {
+                        alergias: updatedMedicalHistory.alergias,
+                        medication: updatedMedicalHistory.medication,
+                        relato_cliente: updatedMedicalHistory.relato_cliente // Atualiza as observações
+                        // Aqui você adicionaria campos para diabetes, hipertensao, cardio, coagulacao, none, etc.
+                        // se você quiser que as alterações feitas aqui persistam no agendamento.
+                    });
+                    showProntuarioMessage("Histórico médico salvo com sucesso!", false);
+                } else {
+                    showProntuarioMessage("Nenhum agendamento encontrado para atualizar o histórico médico.", true);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar histórico médico:", error);
+                showProntuarioMessage("Erro ao salvar histórico médico. Tente novamente.", true);
+            }
+        });
+
+        // --- Funcionalidade de salvar anotações rápidas ---
+        document.getElementById('saveQuickNotesBtn').addEventListener('click', async () => {
+            const userEmail = document.getElementById('patientEmail').value;
+            const quickNotesContent = document.getElementById('quickNotes').value;
+
+            if (!userEmail) {
+                showProntuarioMessage("E-mail do paciente não encontrado para salvar anotações.", true);
+                return;
+            }
+
+            try {
+                const q = query(usuariosRef, where("email", "==", userEmail));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    const userDocRef = doc(db, 'USUARIO', snap.docs[0].id);
+                    await updateDoc(userDocRef, { quick_notes: quickNotesContent });
+                    showProntuarioMessage("Anotações rápidas salvas com sucesso!", false);
+                    // Atualiza o localStorage
+                    const storedUser = JSON.parse(localStorage.getItem('usuario'));
+                    localStorage.setItem('usuario', JSON.stringify({ ...storedUser, quick_notes: quickNotesContent }));
+                } else {
+                    showProntuarioMessage("Usuário não encontrado para salvar anotações.", true);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar anotações rápidas:", error);
+                showProntuarioMessage("Erro ao salvar anotações. Tente novamente.", true);
+            }
+        });
+
+        // --- Funcionalidade de seleção de dentes (apenas visual, não persistente aqui) ---
+        document.querySelectorAll('.tooth').forEach(tooth => {
+            tooth.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                // A lógica de adicionar/remover 'tooth-problem' é mais para visualização
+                // A persistência dos dentes com problema deve vir do agendamento
+                if(this.classList.contains('selected')) {
+                    if (!this.querySelector('.tooth-problem')) {
+                        const problemSpan = document.createElement('span');
+                        problemSpan.className = 'tooth-problem';
+                        problemSpan.textContent = 'Problema'; // Pode ser dinâmico
+                        this.appendChild(problemSpan);
+                    }
+                } else {
+                    const problemSpan = this.querySelector('.tooth-problem');
+                    if(problemSpan) {
+                        this.removeChild(problemSpan);
+                    }
+                }
+            });
+        });
+
+        // --- Funcionalidade de busca (simples, apenas alert) ---
+        document.getElementById('searchPatientInput').addEventListener('keyup', function(e) {
+            if(e.key === 'Enter') {
+                showProntuarioMessage('Funcionalidade de busca de paciente ainda não implementada para múltiplos usuários.', false);
+                // Em um sistema multi-usuário, isso exigiria um endpoint na API Flask
+                // para buscar pacientes por CPF/nome e carregar seus dados.
+            }
+        });
+
+        // --- Botão "Novo" (simples, apenas alert) ---
+        document.querySelector('button:contains("Novo")').addEventListener('click', function() {
+            showProntuarioMessage('Funcionalidade "Novo" ainda não implementada.', false);
+        });
+
+        // --- Botão "Agendar Consulta" no final (redireciona para agendamento.html) ---
+        document.querySelector('button.mt-4.w-full.bg-blue-600').addEventListener('click', function() {
+            window.location.assign('/agendamento.html');
+        });
+
+        // --- Botões de histórico de atendimento (detalhes/imprimir) ---
+        // Estes botões são estáticos no HTML. Para torná-los funcionais,
+        // você precisaria de um endpoint na API Flask para buscar detalhes do atendimento
+        // e possivelmente gerar PDFs.
+        document.querySelectorAll('#treatmentHistoryList button').forEach(button => {
+            button.addEventListener('click', function() {
+                showProntuarioMessage('Funcionalidade de detalhes/impressão de atendimento ainda não implementada.', false);
+            });
+        });
+
+    </script>
+</body>
+</html>
