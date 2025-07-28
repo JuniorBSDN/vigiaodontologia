@@ -1,503 +1,309 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Paciente - Sorriso Perfeito</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Área do Paciente - Odontologia Vigia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+        .dashboard-card {
+            transition: all 0.3s ease;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
-        }
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .dashboard-card:hover {
+            transform: scale(1.03);
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- Sidebar -->
-        <aside class="bg-indigo-700 text-white w-full md:w-64 p-4 md:min-h-screen">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-tooth text-2xl text-indigo-200"></i>
-                    <h1 class="text-xl font-bold">ODONTOLOGIA VIGIA</h1>
-                </div>
-                <button id="sidebarToggle" class="md:hidden text-white">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+<body class="font-sans bg-gray-50 min-h-screen flex flex-col">
 
-            <nav class="space-y-2">
-                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg bg-indigo-800">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="agendamento.html" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Agendamentos</span>
-                </a>
-                <a href="prontuario.html" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-file-medical"></i>
-                    <span>Prontuário</span>
-                </a>
-                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span>Financeiro</span>
-                </a>
-                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-cog"></i>
-                    <span>Configurações</span>
-                </a>
-                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Ajuda</span>
-                </a>
+    <!-- Header/Navigation (simplificado para a área do paciente) -->
+    <header class="bg-blue-700 text-white shadow-lg py-3">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-tooth text-3xl"></i>
+                <h1 class="text-2xl font-bold">ÁREA DO PACIENTE</h1>
+            </div>
+            <nav>
+                <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-full font-bold hover:bg-red-700 transition">Sair</button>
             </nav>
+        </div>
+    </header>
 
-            <div class="mt-auto pt-4 border-t border-indigo-600 hidden md:block">
-                <div class="flex items-center space-x-2">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-8 h-8 rounded-full">
-                    <div>
-                        <p class="font-medium">Maria Silva</p>
-                        <p class="text-xs text-indigo-200">Paciente</p>
-                    </div>
-                </div>
-                <button class="w-full mt-2 text-left p-2 rounded-lg hover:bg-indigo-600 transition">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Sair
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-8">
-            <!-- Header -->
-            <header class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-800">Bem-vinda, Maria</h2>
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <button class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-bell text-xl"></i>
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-                        </button>
-                    </div>
-                    <div class="md:hidden">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-8 h-8 rounded-full">
-                    </div>
-                </div>
-            </header>
-
-            <!-- Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
-                    <div class="flex justify-between">
+    <!-- Main Content for Dashboard -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Sidebar -->
+            <div class="md:w-1/4">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center mb-6">
+                        <img id="profileImage" src="https://randomuser.me/api/portraits/men/75.jpg" alt="User" class="w-16 h-16 rounded-full mr-4 object-cover">
                         <div>
-                            <p class="text-gray-500 text-sm">Próxima Consulta</p>
-                            <p class="font-bold text-lg">15/06/2023</p>
-                            <p class="text-gray-600 text-sm">14:30 - Dr. Carlos</p>
-                        </div>
-                        <div class="text-blue-500 text-2xl">
-                            <i class="fas fa-calendar-check"></i>
+                            <h3 class="font-bold text-gray-800" id="dashboard-username">Carregando...</h3>
+                            <p class="text-sm text-gray-600" id="dashboard-email">Carregando...</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Tratamento Atual</p>
-                            <p class="font-bold text-lg">Ortodontia</p>
-                            <p class="text-gray-600 text-sm">Mês 5 de 18</p>
-                        </div>
-                        <div class="text-green-500 text-2xl">
-                            <i class="fas fa-teeth-open"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Próximo Pagamento</p>
-                            <p class="font-bold text-lg">R$ 350,00</p>
-                            <p class="text-gray-600 text-sm">Vence em 10/06</p>
-                        </div>
-                        <div class="text-yellow-500 text-2xl">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow p-4 border-l-4 border-purple-500">
-                    <div class="flex justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm">Pontos Fidelidade</p>
-                            <p class="font-bold text-lg">1.250 pts</p>
-                            <p class="text-gray-600 text-sm">Resgate agora</p>
-                        </div>
-                        <div class="text-purple-500 text-2xl">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                    </div>
+                    <nav>
+                        <a href="#" id="navOverview" class="block py-3 px-4 bg-teal-50 text-teal-600 rounded-lg font-medium mb-2"><i class="fas fa-home mr-2"></i> Visão Geral</a>
+                        <a href="#" id="navAppointments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-calendar-alt mr-2"></i> Meus Agendamentos</a>
+                        <a href="#" id="navTreatments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-tooth mr-2"></i> Meus Tratamentos</a>
+                        <a href="#" id="navDocuments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-file-alt mr-2"></i> Documentos</a>
+                        <a href="financeiro.html" id="navPayments" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-credit-card mr-2"></i> Financeiro</a>
+                        <a href="#" id="navProfile" class="block py-3 px-4 hover:bg-gray-100 rounded-lg mb-2"><i class="fas fa-user mr-2"></i> Meu Perfil</a>
+                        <button id="logoutSidebarBtn" class="block w-full text-left py-3 px-4 hover:bg-gray-100 rounded-lg text-red-500"><i class="fas fa-sign-out-alt mr-2"></i> Sair</button>
+                    </nav>
                 </div>
             </div>
 
-            <!-- Main Sections -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Agendamentos -->
-                <div class="lg:col-span-2 bg-white rounded-lg shadow overflow-hidden">
-                    <div class="p-4 border-b">
-                        <h3 class="font-bold text-lg flex items-center">
-                            <i class="fas fa-calendar-alt text-indigo-500 mr-2"></i>
-                            Próximos Agendamentos
-                        </h3>
-                    </div>
-                    <div class="divide-y">
-                        <div class="p-4 hover:bg-gray-50 transition cursor-pointer">
-                            <div class="flex justify-between items-center">
+            <!-- Main Content Area -->
+            <div class="md:w-3/4">
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Bem-vindo de volta, <span id="dashboard-greeting">Carregando...</span>!</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Dashboard Card: Próxima Consulta -->
+                        <div class="bg-teal-50 rounded-lg p-6 dashboard-card">
+                            <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="font-medium">Consulta de Rotina</p>
-                                    <p class="text-sm text-gray-500">15/06/2023 - 14:30</p>
+                                    <h3 class="text-gray-600 mb-1">Próxima Consulta</h3>
+                                    <p id="nextAppointmentDate" class="text-2xl font-bold text-gray-800">N/A</p>
+                                    <p id="nextAppointmentDetails" class="text-gray-600">Nenhum agendamento futuro</p>
                                 </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-indigo-500 hover:text-indigo-700">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                <div class="bg-teal-100 p-3 rounded-full">
+                                    <i class="fas fa-calendar-check text-teal-600 text-xl"></i>
                                 </div>
-                            </div>
-                            <div class="mt-2 flex items-center text-sm text-gray-600">
-                                <i class="fas fa-user-md mr-1"></i>
-                                <span>Dr. Carlos Eduardo</span>
                             </div>
                         </div>
 
-                        <div class="p-4 hover:bg-gray-50 transition cursor-pointer">
-                            <div class="flex justify-between items-center">
+                        <!-- Dashboard Card: Tratamento Atual -->
+                        <div class="bg-blue-50 rounded-lg p-6 dashboard-card">
+                            <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="font-medium">Manutenção do Aparelho</p>
-                                    <p class="text-sm text-gray-500">30/06/2023 - 10:00</p>
+                                    <h3 class="text-gray-600 mb-1">Tratamento Atual</h3>
+                                    <p id="currentTreatment" class="text-2xl font-bold text-gray-800">N/A</p>
+                                    <p id="treatmentProgress" class="text-gray-600">Nenhum tratamento em andamento</p>
                                 </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-indigo-500 hover:text-indigo-700">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-tooth text-blue-600 text-xl"></i>
                                 </div>
-                            </div>
-                            <div class="mt-2 flex items-center text-sm text-gray-600">
-                                <i class="fas fa-user-md mr-1"></i>
-                                <span>Dra. Ana Paula</span>
                             </div>
                         </div>
 
-                        <div class="p-4 hover:bg-gray-50 transition cursor-pointer">
-                            <div class="flex justify-between items-center">
+                        <!-- Dashboard Card: Documentos -->
+                        <div class="bg-purple-50 rounded-lg p-6 dashboard-card">
+                            <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="font-medium">Limpeza Dental</p>
-                                    <p class="text-sm text-gray-500">15/07/2023 - 09:00</p>
+                                    <h3 class="text-gray-600 mb-1">Documentos</h3>
+                                    <p id="documentCount" class="text-2xl font-bold text-gray-800">0</p>
+                                    <p class="text-gray-600">Disponíveis</p>
                                 </div>
-                                <div class="flex space-x-2">
-                                    <button class="text-indigo-500 hover:text-indigo-700">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-500 hover:text-red-700">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i class="fas fa-file-alt text-purple-600 text-xl"></i>
                                 </div>
-                            </div>
-                            <div class="mt-2 flex items-center text-sm text-gray-600">
-                                <i class="fas fa-user-md mr-1"></i>
-                                <span>Dr. Carlos Eduardo</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 border-t">
-                        <button class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition flex items-center justify-center">
-                            <i class="fas fa-plus mr-2"></i>
-                            Novo Agendamento
-                        </button>
+
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Seus Próximos Compromissos</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 text-left text-gray-700">Data</th>
+                                    <th class="py-3 px-4 text-left text-gray-700">Horário</th>
+                                    <th class="py-3 px-4 text-left text-gray-700">Procedimento</th>
+                                    <th class="py-3 px-4 text-left text-gray-700">Dentista</th>
+                                    <th class="py-3 px-4 text-left text-gray-700">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="upcomingAppointmentsTableBody">
+                                <!-- Appointments will be loaded here -->
+                                <tr><td colspan="5" class="py-3 px-4 text-center text-gray-500">Nenhum compromisso futuro.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Atividades Recentes -->
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="p-4 border-b">
-                        <h3 class="font-bold text-lg flex items-center">
-                            <i class="fas fa-bell text-yellow-500 mr-2"></i>
-                            Notificações
-                        </h3>
-                    </div>
-                    <div class="h-64 overflow-y-auto custom-scrollbar">
-                        <div class="p-4 border-b">
-                            <div class="flex items-start">
-                                <div class="bg-blue-100 p-2 rounded-full mr-3">
-                                    <i class="fas fa-calendar-check text-blue-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Consulta confirmada</p>
-                                    <p class="text-sm text-gray-600">Sua consulta para 15/06 foi confirmada</p>
-                                    <p class="text-xs text-gray-400 mt-1">2 horas atrás</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4 border-b">
-                            <div class="flex items-start">
-                                <div class="bg-green-100 p-2 rounded-full mr-3">
-                                    <i class="fas fa-file-invoice-dollar text-green-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Pagamento recebido</p>
-                                    <p class="text-sm text-gray-600">Pagamento de R$ 350,00 confirmado</p>
-                                    <p class="text-xs text-gray-400 mt-1">Ontem, 15:30</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4 border-b">
-                            <div class="flex items-start">
-                                <div class="bg-purple-100 p-2 rounded-full mr-3">
-                                    <i class="fas fa-gem text-purple-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Pontos adicionados</p>
-                                    <p class="text-sm text-gray-600">Você ganhou 50 pontos de fidelidade</p>
-                                    <p class="text-xs text-gray-400 mt-1">Ontem, 15:30</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4 border-b">
-                            <div class="flex items-start">
-                                <div class="bg-yellow-100 p-2 rounded-full mr-3">
-                                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Lembrete importante</p>
-                                    <p class="text-sm text-gray-600">Não esqueça de escovar os dentes após as refeições</p>
-                                    <p class="text-xs text-gray-400 mt-1">3 dias atrás</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4">
-                            <div class="flex items-start">
-                                <div class="bg-red-100 p-2 rounded-full mr-3">
-                                    <i class="fas fa-calendar-times text-red-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium">Consulta cancelada</p>
-                                    <p class="text-sm text-gray-600">Sua consulta de 10/06 foi cancelada</p>
-                                    <p class="text-xs text-gray-400 mt-1">5 dias atrás</p>
-                                </div>
-                            </div>
-                        </div>
+                <div class="bg-white rounded-xl shadow-md p-6 mt-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Seus Tratamentos em Andamento</h3>
+                    <div class="space-y-4" id="currentTreatmentsContainer">
+                        <!-- Treatments will be loaded here -->
+                        <p class="text-gray-500 text-center">Nenhum tratamento em andamento.</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tratamentos em Andamento -->
-            <div class="mt-6 bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-4 border-b">
-                    <h3 class="font-bold text-lg flex items-center">
-                        <i class="fas fa-teeth-open text-indigo-500 mr-2"></i>
-                        Tratamentos em Andamento
-                    </h3>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-bold">Ortodontia</h4>
-                                <p class="text-sm text-gray-600">Aparelho fixo superior e inferior</p>
-                            </div>
-                            <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">Mês 5/18</span>
-                        </div>
-                        <div class="mt-4">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span>Progresso</span>
-                                <span>28%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-indigo-600 h-2 rounded-full" style="width: 28%"></div>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between text-sm">
-                            <div>
-                                <p class="text-gray-500">Início</p>
-                                <p>15/01/2023</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-gray-500">Previsão</p>
-                                <p>15/07/2024</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-bold">Clareamento Dental</h4>
-                                <p class="text-sm text-gray-600">Clareamento a laser</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Mês 2/3</span>
-                        </div>
-                        <div class="mt-4">
-                            <div class="flex justify-between text-sm mb-1">
-                                <span>Progresso</span>
-                                <span>66%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: 66%"></div>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between text-sm">
-                            <div>
-                                <p class="text-gray-500">Início</p>
-                                <p>01/05/2023</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-gray-500">Previsão</p>
-                                <p>01/07/2023</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal de Novo Agendamento (hidden by default) -->
-    <div id="appointmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-lg w-full max-w-md mx-4">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h3 class="font-bold text-lg">Novo Agendamento</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-4">
-                <form>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="procedure">
-                            Procedimento
-                        </label>
-                        <select id="procedure" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option>Consulta de rotina</option>
-                            <option>Limpeza dental</option>
-                            <option>Manutenção de aparelho</option>
-                            <option>Clareamento</option>
-                            <option>Extracão</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="dentist">
-                            Dentista
-                        </label>
-                        <select id="dentist" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option>Dr. Carlos Eduardo</option>
-                            <option>Dra. Ana Paula</option>
-                            <option>Dr. Marcelo Silva</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="date">
-                            Data
-                        </label>
-                        <input type="date" id="date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="time">
-                            Horário
-                        </label>
-                        <input type="time" id="time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <div class="flex justify-end space-x-2 mt-6">
-                        <button type="button" id="cancelAppointment" class="px-4 py-2 border rounded-lg hover:bg-gray-100 transition">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                            Agendar
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script>
-        // Toggle sidebar on mobile
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            document.querySelector('aside').classList.toggle('hidden');
-        });
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 Odontologia Vigia. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
-        // Modal functionality
-        const appointmentModal = document.getElementById('appointmentModal');
-        const closeModal = document.getElementById('closeModal');
-        const cancelAppointment = document.getElementById('cancelAppointment');
-        const newAppointmentBtn = document.querySelector('button:contains("Novo Agendamento")');
+    <script type="module">
+        // Importe as funções necessárias dos SDKs do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-        function openModal() {
-            appointmentModal.classList.remove('hidden');
-        }
+        // SUA CONFIGURAÇÃO DO FIREBASE AQUI
+        // ATENÇÃO: Substitua os valores abaixo pela sua nova firebaseConfig
+        // que você obteve do console do Firebase após recriar o app web.
+        const firebaseConfig = {
+            apiKey: "SUA_NOVA_API_KEY_AQUI",
+            authDomain: "SEU_AUTH_DOMAIN_AQUI",
+            projectId: "SEU_PROJECT_ID_AQUI",
+            storageBucket: "SEU_STORAGE_BUCKET_AQUI",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID_AQUI",
+            appId: "SEU_NOVO_APP_ID_AQUI"
+        };
 
-        function closeModalFunc() {
-            appointmentModal.classList.add('hidden');
-        }
+        // Inicialize o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Instância de autenticação
+        const db = getFirestore(app); // Instância do Firestore
+        const usuariosRef = collection(db, 'USUARIO');
+        const agendamentosRef = collection(db, 'AGENDAMENTOS');
 
-        // This would be attached to the "Novo Agendamento" button
-        // For demo purposes, we'll simulate it
-        document.querySelector('main').addEventListener('click', function(e) {
-            if (e.target.textContent.includes('Novo Agendamento') ||
-                e.target.parentElement.textContent.includes('Novo Agendamento')) {
-                openModal();
-            }
-        });
+        // URL da sua API Flask. Para deploy no Vercel, DEVE ser "/api".
+        const flaskApiUrl = "/api";
 
-        closeModal.addEventListener('click', closeModalFunc);
-        cancelAppointment.addEventListener('click', closeModalFunc);
+        // Elementos do DOM
+        const dashboardUsernameEl = document.getElementById('dashboard-username');
+        const dashboardEmailEl = document.getElementById('dashboard-email');
+        const dashboardGreetingEl = document.getElementById('dashboard-greeting');
+        const profileImageEl = document.getElementById('profileImage');
+        const nextAppointmentDateEl = document.getElementById('nextAppointmentDate');
+        const nextAppointmentDetailsEl = document.getElementById('nextAppointmentDetails');
+        const upcomingAppointmentsTableBody = document.getElementById('upcomingAppointmentsTableBody');
+        const currentTreatmentEl = document.getElementById('currentTreatment');
+        const treatmentProgressEl = document.getElementById('treatmentProgress');
+        const documentCountEl = document.getElementById('documentCount');
+        const currentTreatmentsContainer = document.getElementById('currentTreatmentsContainer');
 
-        // Close modal when clicking outside
-        appointmentModal.addEventListener('click', function(e) {
-            if (e.target === appointmentModal) {
-                closeModalFunc();
-            }
-        });
-
-        // Simulate loading for treatments
-        document.addEventListener('DOMContentLoaded', function() {
-            const treatments = document.querySelectorAll('.hover\\:shadow-md');
-            treatments.forEach(treatment => {
-                treatment.addEventListener('click', function() {
-                    // In a real app, this would navigate to treatment details
-                    console.log('Treatment clicked:', this.querySelector('h4').textContent);
+        // Função para carregar dados do usuário e agendamentos
+        async function loadUserData(userEmail) {
+            try {
+                // Carregar dados do usuário da API Flask
+                const userRes = await fetch(`${flaskApiUrl}/completar_perfil`, {
+                    method: "POST", // Usamos POST para enviar o email, embora GET com query params seria mais RESTful
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: userEmail })
                 });
-            });
+                const userData = await userRes.json();
+
+                if (userRes.ok && userData.usuario) { // Assumindo que a API retorna 'usuario' em caso de sucesso
+                    dashboardUsernameEl.textContent = userData.usuario.nome || 'Paciente';
+                    dashboardEmailEl.textContent = userData.usuario.email || '';
+                    dashboardGreetingEl.textContent = userData.usuario.nome ? userData.usuario.nome.split(' ')[0] : 'Paciente';
+                    // Atualize a imagem de perfil se tiver uma URL no userData.usuario.fotoPerfil
+                    // profileImageEl.src = userData.usuario.fotoPerfil || 'https://randomuser.me/api/portraits/men/75.jpg';
+                } else {
+                    console.error("Erro ao carregar dados do usuário:", userData.erro);
+                    // Opcional: Redirecionar para perfil.html se o perfil não estiver completo
+                    // window.location.href = "perfil.html";
+                }
+
+                // Carregar próximos agendamentos da API Flask (você precisará criar este endpoint)
+                // Exemplo de como seria o endpoint: /api/agendamentos_paciente?email=userEmail
+                const appointmentsRes = await fetch(`${flaskApiUrl}/agendamentos_paciente?email=${userEmail}`);
+                const appointmentsData = await appointmentsRes.json();
+
+                if (appointmentsRes.ok && appointmentsData.agendamentos) {
+                    const now = new Date();
+                    const upcoming = appointmentsData.agendamentos
+                        .filter(app => new Date(`${app.data_consulta}T${app.hora_consulta}`) >= now)
+                        .sort((a, b) => new Date(`${a.data_consulta}T${a.hora_consulta}`) - new Date(`${b.data_consulta}T${b.hora_consulta}`));
+
+                    upcomingAppointmentsTableBody.innerHTML = ''; // Limpa a tabela
+
+                    if (upcoming.length > 0) {
+                        const nextApp = upcoming[0];
+                        nextAppointmentDateEl.textContent = nextApp.data_consulta;
+                        nextAppointmentDetailsEl.textContent = `${nextApp.hora_consulta} - ${nextApp.procedimento}`;
+
+                        upcoming.forEach(app => {
+                            const row = document.createElement('tr');
+                            row.className = 'border-b border-gray-200 hover:bg-gray-50';
+                            row.innerHTML = `
+                                <td class="py-3 px-4">${app.data_consulta}</td>
+                                <td class="py-3 px-4">${app.hora_consulta}</td>
+                                <td class="py-3 px-4">${app.procedimento}</td>
+                                <td class="py-3 px-4">${app.dentista}</td>
+                                <td class="py-3 px-4">
+                                    <button class="text-teal-600 hover:text-teal-800 mr-3"><i class="fas fa-eye"></i></button>
+                                    <button class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></button>
+                                    <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            `;
+                            upcomingAppointmentsTableBody.appendChild(row);
+                        });
+                    } else {
+                        nextAppointmentDateEl.textContent = "N/A";
+                        nextAppointmentDetailsEl.textContent = "Nenhum agendamento futuro";
+                        upcomingAppointmentsTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-gray-500">Nenhum compromisso futuro.</td></tr>';
+                    }
+                } else {
+                    console.error("Erro ao carregar agendamentos:", appointmentsData.erro);
+                    nextAppointmentDateEl.textContent = "N/A";
+                    nextAppointmentDetailsEl.textContent = "Nenhum agendamento futuro";
+                    upcomingAppointmentsTableBody.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-gray-500">Nenhum compromisso futuro.</td></tr>';
+                }
+
+                // Placeholder para carregar tratamentos em andamento e documentos
+                currentTreatmentsContainer.innerHTML = '<p class="text-gray-500 text-center">Nenhum tratamento em andamento (funcionalidade a ser implementada).</p>';
+                documentCountEl.textContent = '0'; // Placeholder
+            } catch (error) {
+                console.error("Erro geral ao carregar dados do dashboard:", error);
+                // Redirecionar para login se houver erro grave (ex: usuário não autenticado)
+                // window.location.href = "login.html";
+            }
+        }
+
+        // Função de Logout
+        async function handleLogout() {
+            try {
+                await signOut(auth); // Desloga do Firebase Authentication
+                localStorage.removeItem('usuario'); // Limpa dados do usuário do localStorage
+                window.location.href = "login.html"; // Redireciona para a página de login
+            } catch (error) {
+                console.error("Erro ao fazer logout:", error);
+                alert("Não foi possível fazer logout. Tente novamente.");
+            }
+        }
+
+        // Event Listeners para Logout
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('logoutSidebarBtn').addEventListener('click', handleLogout);
+
+        // Verifica o estado de autenticação ao carregar a página
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuário logado via Firebase Auth (Google Login)
+                loadUserData(user.email);
+            } else {
+                // Se não logado via Firebase Auth, tenta carregar do localStorage (Email/Senha)
+                const storedUser = localStorage.getItem('usuario');
+                if (storedUser) {
+                    const user = JSON.parse(storedUser);
+                    loadUserData(user.email);
+                } else {
+                    // Nenhum usuário logado, redireciona para a página de login
+                    window.location.href = "login.html";
+                }
+            }
         });
+
+        // Event listeners para navegação na sidebar (apenas para exemplo, não carregam conteúdo dinâmico ainda)
+        document.getElementById('navOverview').addEventListener('click', (e) => { e.preventDefault(); alert('Visão Geral - Já nesta página!'); });
+        document.getElementById('navAppointments').addEventListener('click', (e) => { e.preventDefault(); alert('Meus Agendamentos - Funcionalidade a ser implementada ou redirecionar para agendamentos.html'); });
+        document.getElementById('navTreatments').addEventListener('click', (e) => { e.preventDefault(); alert('Meus Tratamentos - Funcionalidade a ser implementada'); });
+        document.getElementById('navDocuments').addEventListener('click', (e) => { e.preventDefault(); alert('Documentos - Funcionalidade a ser implementada'); });
+        document.getElementById('navPayments').addEventListener('click', (e) => { e.preventDefault(); window.location.href = 'financeiro.html'; }); // Redireciona para financeiro.html
+        document.getElementById('navProfile').addEventListener('click', (e) => { e.preventDefault(); alert('Meu Perfil - Funcionalidade a ser implementada ou redirecionar para perfil.html'); });
+
     </script>
 </body>
 </html>
